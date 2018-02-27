@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    void setValidators();
 };
 
 #endif // MAINWINDOW_H
