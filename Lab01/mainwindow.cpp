@@ -1,16 +1,14 @@
-#include <QDoubleValidator>
-#include <QIntValidator>
+#include "Models/tablemodel.h"
+#include "routesmanager.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), manager(nullptr)
 {
     ui->setupUi(this);
-
-    setValidators();
 }
 
 MainWindow::~MainWindow()
@@ -18,12 +16,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setValidators()
+void MainWindow::setModels(TableModel *routes, TableModel *points)
 {
-    QDoubleValidator *val = new QDoubleValidator();
-    val->setLocale(QLocale::English);
+    ui->routeTableView->setModel(routes);
+    ui->pointTableView->setModel(points);
+}
 
-    ui->latitudeLineEdit->setValidator(val);
-    ui->longitudeLineEdit->setValidator(val);
-    ui->levelLineEdit->setValidator(new QIntValidator(1, 10));
+void MainWindow::setRoutesManager(RoutesManager *man)
+{
+    manager = man;
+    setModels(manager->routesModel(), manager->pointsModel());
 }

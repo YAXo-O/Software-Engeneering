@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+class TableModel;
+class RoutesManager;
+
 namespace Ui {
     class MainWindow;
 }
@@ -14,9 +17,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setModels(TableModel *routes, TableModel *points);
+    void setRoutesManager(RoutesManager *man);
 
 private:
     Ui::MainWindow *ui;
+    RoutesManager *manager;
 
     void setValidators();
 };

@@ -25,9 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Models/routemodel.cpp
+    Models/abstractrow.cpp \
+    Models/vectorrow.cpp \
+    Models/tablemodel.cpp \
+    routesmanager.cpp
 
 HEADERS  += mainwindow.h \
-    Models/routemodel.h
+    Models/abstractrow.h \
+    Models/vectorrow.h \
+    Models/tablemodel.h \
+    routesmanager.h
 
 FORMS    += mainwindow.ui
