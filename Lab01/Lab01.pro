@@ -28,12 +28,14 @@ SOURCES += main.cpp\
     Models/abstractrow.cpp \
     Models/vectorrow.cpp \
     Models/tablemodel.cpp \
-    routesmanager.cpp
+    routesmanager.cpp \
+    Parsers/gpxparser.cpp
 
 HEADERS  += mainwindow.h \
     Models/abstractrow.h \
     Models/vectorrow.h \
     Models/tablemodel.h \
-    routesmanager.h
+    routesmanager.h \
+    Parsers/gpxparser.h
 
 FORMS    += mainwindow.ui
