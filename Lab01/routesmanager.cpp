@@ -1,19 +1,20 @@
 #include <QDateTime>
 
+#include <QDebug>
+
 #include "routesmanager.h"
 
-RoutesManager::RoutesManager(): routes(new TableModel), points(new TableModel), current(0), serial(0)
+RoutesManager::RoutesManager(): routes(new TableModel(3)), points(new TableModel(2)), current(0), serial(0)
 {
     routes->addHeader("Name");
     routes->addHeader("Length");
     routes->addHeader("Creation time");
     routes->addEditableColumn(0);
 
-    points->addHeader("№");
     points->addHeader("Longitude");
     points->addHeader("Latitude");
+    points->addEditableColumn(0);
     points->addEditableColumn(1);
-    points->addEditableColumn(2);
 }
 
 void RoutesManager::addRoute(const QString &name)
@@ -34,6 +35,11 @@ void RoutesManager::selectRoute(uint16_t id)
 
 void RoutesManager::addPoint(double longitude, double latitude)
 {
+    int row = points->rowCount();
+    points->insertRow(row);
+    points->setData(points->index(row, 0), longitude);
+    points->setData(points->index(row, 1), latitude);
+    points->setData(points->index(row, 2), current);
 }
 
 void RoutesManager::removePoint(uint16_t id)

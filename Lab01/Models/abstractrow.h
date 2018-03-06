@@ -6,7 +6,7 @@
 class AbstractRow
 {
 public:
-    AbstractRow();
+    AbstractRow() {}
     virtual ~AbstractRow() {}
 
     virtual void setField(int field, const QVariant &value) = 0;

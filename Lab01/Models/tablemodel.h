@@ -8,7 +8,7 @@ class TableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    TableModel(QObject *parent = nullptr);
+    TableModel(int columns, QObject *parent = nullptr);
     ~TableModel() {}
 
     int rowCount(const QModelIndex &index = QModelIndex()) const override;
@@ -29,6 +29,7 @@ private:
     QVector<AbstractRow *> table;
     QVector<QString> headers;
     QVector<int> editableColumns;
+    int column;
 };
 
 #endif // ROUTESMODEL_H

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "mainwindow.h"
 #include "routesmanager.h"
+#include "Parsers/gpxparser.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,8 +9,11 @@ int main(int argc, char *argv[])
 
     RoutesManager man;
     MainWindow w;
-    w.setRoutesManager(&man);
+    GPXParser parser;
+    parser.parse("./berlin_moscow.gpx", &man);
+
     w.show();
+    w.setRoutesManager(&man);
 
 
     return a.exec();

@@ -1,7 +1,7 @@
 #include "vectorrow.h"
 #include "tablemodel.h"
 
-TableModel::TableModel(QObject *parent): QAbstractTableModel(parent)
+TableModel::TableModel(int columns, QObject *parent): QAbstractTableModel(parent), column(columns)
 {
 }
 
@@ -12,7 +12,7 @@ int TableModel::rowCount(const QModelIndex &) const
 
 int TableModel::columnCount(const QModelIndex &) const
 {
-    return 3;
+    return column;
 }
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
