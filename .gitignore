@@ -36,3 +36,8 @@ Makefile*
 
 # QtCtreator CMake
 CMakeLists.txt.user*
+
+# InteliJ IDEA & Node.JS
+.idea
+.node_modules
+*.iml
