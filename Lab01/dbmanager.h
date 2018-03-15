@@ -20,8 +20,10 @@ public:
     void removeRoute(int id);
     void setName(const QString &name);
 
-    void addPoint(const QPointF &point);
+    int addPoint(const QPointF &point);
     void removePoint(int id);
+    void restorePoint(const QPointF &point, int id);
+    QPointF getPoint(int id);
 
     QString routeQuery() const;
     QString pointsQuery() const;

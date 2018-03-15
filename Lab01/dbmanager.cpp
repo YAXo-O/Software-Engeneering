@@ -8,7 +8,7 @@ DBManager::DBManager(): QWidget(), currentRoute(0), serial(0), bNotify(true)
     db = QSqlDatabase::addDatabase("QSQLITE");
 
     if(!db.open())
-        qDebug() << db.lastError(); // Replace with throw
+        qDebug() << db.lastError();
 
     QSqlQuery initRoutes;
     const QString initRoutesQuery = "CREATE TABLE "
@@ -104,8 +104,11 @@ void DBManager::setName(const QString &name)
         emit needsRefreshment();
 }
 
-void DBManager::addPoint(const QPointF &point)
+int DBManager::addPoint(const QPointF &point)
 {
+    if(currentRoute < 0)
+        return -1;
+
     QSqlQuery insert;
     const QString insertQuery = "INSERT INTO points(longitude, latitude, route)"
                                 "VALUES(?, ?, ?)";
@@ -118,8 +121,18 @@ void DBManager::addPoint(const QPointF &point)
     if(!insert.exec())
         qDebug() << db.lastError();
 
+    QSqlQuery returning;
+    const QString returningQuery = "SELECT last_insert_rowid()";
+    if(!returning.exec(returningQuery))
+        qDebug() << db.lastError();
+
     if(bNotify)
         emit needsRefreshment();
+
+    if(returning.next())
+        return returning.value(0).toInt();
+
+    return -1;
 }
 
 void DBManager::removePoint(int id)
@@ -137,6 +150,42 @@ void DBManager::removePoint(int id)
         emit needsRefreshment();
 }
 
+void DBManager::restorePoint(const QPointF &point, int id)
+{
+    if(currentRoute < 0)
+        return;
+
+    QSqlQuery insert;
+    const QString insertQuery = "INSERT INTO points(id, longitude, latitude, route)"
+                                "VALUES(?, ?, ?, ?)";
+
+    insert.prepare(insertQuery);
+    insert.bindValue(0, QString::number(id));
+    insert.bindValue(1, QString::number(point.x()));
+    insert.bindValue(2, QString::number(point.y()));
+    insert.bindValue(3, QString::number(currentRoute));
+
+    if(!insert.exec())
+        qDebug() << db.lastError();
+
+    if(bNotify)
+        emit needsRefreshment();
+}
+
+QPointF DBManager::getPoint(int id)
+{
+    QSqlQuery select;
+    QString selectQuery = "SELECT longitude, latitude FROM points WHERE id = " + QString::number(id);
+
+    if(!select.exec(selectQuery))
+        qDebug() << db.lastError();
+
+    if(select.next())
+        return QPointF(select.value(0).toDouble(), select.value(1).toDouble());
+
+    return QPointF(0, 0);
+}
+
 QString DBManager::routeQuery() const
 {
     return "SELECT id, name AS Name, len AS 'Route Length', creationDate AS 'Creation Date' FROM routes";
@@ -144,7 +193,7 @@ QString DBManager::routeQuery() const
 
 QString DBManager::pointsQuery() const
 {
-    return "SELECT longitude AS 'Longitude', latitude AS 'Latitude'"
+    return "SELECT id, longitude AS 'Longitude', latitude AS 'Latitude'"
            "FROM points WHERE route = " + QString::number(currentRoute);
 }
 
@@ -196,7 +245,7 @@ void DBManager::backupRoute(int id)
                                         "route INTEGER NOT NULL DEFAULT 0)";
 
     if(!createBackupRuote.exec(createRouteBackupQuery) || !createBackupPoints.exec(createPointsBackupQuery))
-        qDebug() << db.lastError();
+        qDebug() << "Error at creating table" << db.lastError();
 
     QSqlQuery copyRoute;
     QString copyRouteQuery = "INSERT INTO " + routeTableBackup + " SELECT * FROM routes WHERE id = " + QString::number(id);
@@ -205,7 +254,7 @@ void DBManager::backupRoute(int id)
             "INSERT INTO " + pointsTableBackup + " SELECT * FROM points WHERE route = " + QString::number(id);
 
     if(!copyRoute.exec(copyRouteQuery) || !copyPoints.exec(copyPointsQuery))
-        qDebug() << db.lastError();
+        qDebug() << "Error at copying data" << db.lastError();
 }
 
 void DBManager::restoreRoute(int id)

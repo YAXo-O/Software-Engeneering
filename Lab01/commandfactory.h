@@ -15,6 +15,8 @@ public:
     Command *createRoute(DBManager &manager);
     Command *removeRoute(DBManager &manager, int id);
     Command *reset(DBManager &manager);
+    Command *createPoint(DBManager &manager, const QPointF &point);
+    Command *removePoint(DBManager &manager, int id);
 
 };
 

@@ -33,7 +33,9 @@ SOURCES += main.cpp\
     commandfactory.cpp \
     Commands/createroute.cpp \
     Commands/reset.cpp \
-    Commands/removeroute.cpp
+    Commands/removeroute.cpp \
+    Commands/createpoint.cpp \
+    Commands/removepoint.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -44,6 +46,8 @@ HEADERS  += mainwindow.h \
     commandfactory.h \
     Commands/createroute.h \
     Commands/reset.h \
-    Commands/removeroute.h
+    Commands/removeroute.h \
+    Commands/createpoint.h \
+    Commands/removepoint.h
 
 FORMS    += mainwindow.ui

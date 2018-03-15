@@ -11,6 +11,7 @@ RemoveRoute::~RemoveRoute()
 
 void RemoveRoute::exec()
 {
+    manager.dropBackup(id);
     manager.backupRoute(id);
     manager.removeRoute(id);
 }

@@ -30,12 +30,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::onActionloadTriggered()
 {
-    QString filename = QFileDialog::getOpenFileName(nullptr, "GPX File", QString(), "*.gpx");
+    QStringList filename = QFileDialog::getOpenFileNames(nullptr, "GPX File", QString(), "*.gpx");
     if(filename.isEmpty())
         return;
     try
     {
-        cmd.Receive(factory.importFile(filename, manager));
+        for(auto i : filename)
+            cmd.Receive(factory.importFile(i, manager));
     }
     catch(std::exception &e)
     {
@@ -85,6 +86,21 @@ void MainWindow::setConnections()
             int row = rows.front().row();
             int id = routes.data(routes.index(row, 0)).toInt();
             cmd.Receive(factory.removeRoute(manager, id));
+        }
+    });
+    connect(ui->addPointPushButton, &QPushButton::clicked, [this]()
+    {
+        cmd.Receive(factory.createPoint(manager, QPointF(0, 0)));
+    });
+    connect(ui->removePointPushButton, &QPushButton::clicked, [this]()
+    {
+        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
+        QModelIndexList rows = selection->selectedIndexes();
+        if(rows.size())
+        {
+            int row = rows.front().row();
+            int id = points.data(points.index(row, 0)).toInt();
+            cmd.Receive(factory.removePoint(manager, id));
         }
     });
 }
