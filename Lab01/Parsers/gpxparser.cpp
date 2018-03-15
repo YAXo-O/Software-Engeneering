@@ -3,11 +3,9 @@
 
 #include "gpxparser.h"
 
-void GPXParser::parse(const QString &filename, RoutesManager *manager)
+void GPXParser::parse(const QString &filename, DBManager &manager)
     throw(std::invalid_argument, std::ios_base::failure)
 {
-    if(!manager)
-        throw std::invalid_argument("Manager is not specified");
 
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly))
@@ -15,13 +13,14 @@ void GPXParser::parse(const QString &filename, RoutesManager *manager)
 
     QXmlStreamReader reader(file.readAll());
 
+    manager.disableNotifications();
     while(!reader.atEnd() && !reader.hasError())
     {
         auto token = reader.readNext();
         if(token == QXmlStreamReader::StartElement)
         {
             if(reader.name() == "trk")
-                manager->addRoute(filename.split("/").last().split(".").first());
+                manager.addRoute(filename.split("/").last().split(".").first());
 
             if(reader.name() == "trkpt")
             {
@@ -30,13 +29,23 @@ void GPXParser::parse(const QString &filename, RoutesManager *manager)
 
                 double longitude = attrib.value("lon").toDouble(&bOk);
                 if(!bOk)
+                {
+                    manager.enableNotifications();
                     throw std::invalid_argument("Longitude is abscent");
+                }
                 double latitude = attrib.value("lat").toDouble(&bOk);
                 if(!bOk)
+                {
+                    manager.enableNotifications();
                     throw std::invalid_argument("Latitude is abscent");
+                }
 
-                manager->addPoint(longitude, latitude);
+                manager.addPoint(QPointF(longitude, latitude));
             }
         }
     }
+
+    manager.selectRoute(-1);
+    manager.enableNotifications();
+    manager.refresh();
 }

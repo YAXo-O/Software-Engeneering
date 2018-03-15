@@ -2,14 +2,15 @@
 #define GPXPARSER_H
 
 #include <QString>
-#include "../routesmanager.h"
+#include <QVector>
+#include "dbmanager.h"
 
 class GPXParser
 {
 public:
     GPXParser() = default;
 
-    void parse(const QString &filename, RoutesManager *manager = nullptr)
+    void parse(const QString &filename, DBManager &manager)
         throw(std::invalid_argument, std::ios_base::failure);
 };
 

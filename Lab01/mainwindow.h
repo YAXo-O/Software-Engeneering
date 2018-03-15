@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-class TableModel;
-class RoutesManager;
+#include "dbmanager.h"
+#include "commandmanager.h"
+#include "commandfactory.h"
 
 namespace Ui {
     class MainWindow;
@@ -17,14 +17,25 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void setModels(TableModel *routes, TableModel *points);
-    void setRoutesManager(RoutesManager *man);
+
+private slots:
+    void onActionloadTriggered();
+    void onActionundoTriggered();
+
+    void onActionredoTriggered();
+
+    void onActionresetTriggered();
 
 private:
     Ui::MainWindow *ui;
-    RoutesManager *manager;
+    DBManager manager;
+    CommandManager cmd;
+    CommandFactory factory;
+    QSqlQueryModel routes;
+    QSqlQueryModel points;
 
     void setValidators();
+    void setConnections();
 };
 
 #endif // MAINWINDOW_H

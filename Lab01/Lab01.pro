@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,16 +25,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Models/vectorrow.cpp \
-    Models/tablemodel.cpp \
-    routesmanager.cpp \
-    Parsers/gpxparser.cpp
+    Parsers/gpxparser.cpp \
+    dbmanager.cpp \
+    Commands/command.cpp \
+    Commands/import.cpp \
+    commandmanager.cpp \
+    commandfactory.cpp \
+    Commands/createroute.cpp \
+    Commands/reset.cpp \
+    Commands/removeroute.cpp
 
 HEADERS  += mainwindow.h \
-    Models/abstractrow.h \
-    Models/vectorrow.h \
-    Models/tablemodel.h \
-    routesmanager.h \
-    Parsers/gpxparser.h
+    Parsers/gpxparser.h \
+    dbmanager.h \
+    Commands/command.h \
+    Commands/import.h \
+    commandmanager.h \
+    commandfactory.h \
+    Commands/createroute.h \
+    Commands/reset.h \
+    Commands/removeroute.h
 
 FORMS    += mainwindow.ui

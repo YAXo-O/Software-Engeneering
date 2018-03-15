@@ -126,7 +126,6 @@
      <string>File</string>
     </property>
     <addaction name="actionLoad"/>
-    <addaction name="actionExport"/>
     <addaction name="actionReset"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -152,25 +151,32 @@
    <property name="text">
     <string>Import</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
   <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
    </property>
-  </action>
-  <action name="actionExport">
-   <property name="text">
-    <string>Export</string>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionReset">
    <property name="text">
     <string>Reset</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionCreateRoute">

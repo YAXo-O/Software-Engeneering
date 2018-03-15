@@ -41,3 +41,4 @@ CMakeLists.txt.user*
 .idea
 .node_modules
 *.iml
+*Template.js
