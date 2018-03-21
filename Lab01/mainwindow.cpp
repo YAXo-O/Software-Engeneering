@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pointTableView->setModel(&points);
     ui->routeTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
+    setValidators();
     setConnections();
 }
 
@@ -52,6 +53,56 @@ void MainWindow::setConnections()
     {
         QModelIndex data = routes.index(selected.row(), 0);
         manager.selectRoute(routes.data(data).toInt());
+
+        data = routes.index(selected.row(), 1);
+        ui->routeNameLine->setText(routes.data(data).toString());
+    });
+    connect(ui->pointTableView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+            [this](QModelIndex selected, QModelIndex)
+    {
+        QModelIndex data = points.index(selected.row(), 1);
+        ui->longitudeLine->setText(points.data(data).toString());
+
+        data = points.index(selected.row(), 2);
+        ui->latitudeLine->setText(points.data(data).toString());
+    });
+
+    // Data user changed
+    connect(ui->routeNameLine, &QLineEdit::returnPressed, [this]()
+    {
+        QItemSelectionModel *selection = ui->routeTableView->selectionModel();
+        QModelIndexList rows = selection->selectedIndexes();
+        if(rows.size())
+        {
+            int row = rows.first().row();
+            QModelIndex index = routes.index(row, 0);
+
+            manager.rename(ui->routeNameLine->text(), routes.data(index).toInt());
+        }
+    });
+    connect(ui->longitudeLine, &QLineEdit::returnPressed, [this]()
+    {
+        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
+        QModelIndexList rows = selection->selectedIndexes();
+        if(rows.size())
+        {
+            int row = rows.first().row();
+            QModelIndex index = points.index(row, 0);
+
+            manager.changeLongitude(ui->longitudeLine->text().toDouble(), points.data(index).toInt());
+        }
+    });
+    connect(ui->latitudeLine, &QLineEdit::returnPressed, [this]()
+    {
+        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
+        QModelIndexList rows = selection->selectedIndexes();
+        if(rows.size())
+        {
+            int row = rows.first().row();
+            QModelIndex index = points.index(row, 0);
+
+            manager.changeLatitude(ui->latitudeLine->text().toDouble(), points.data(index).toInt());
+        }
     });
 
     // Manager selection changed
@@ -119,4 +170,13 @@ void MainWindow::onActionresetTriggered()
 {
     if(QMessageBox::warning(nullptr, "Reset operation", "This operation is undoable!") == QMessageBox::Ok)
         cmd.Receive(factory.reset(manager));
+}
+
+void MainWindow::setValidators()
+{
+    QDoubleValidator *longitudeVal = new QDoubleValidator(-180, 180, 5);
+    QDoubleValidator *latitudeVal = new QDoubleValidator(-90, 90, 5);
+
+    ui->longitudeLine->setValidator(longitudeVal);
+    ui->latitudeLine->setValidator(latitudeVal);
 }

@@ -104,6 +104,22 @@ void DBManager::setName(const QString &name)
         emit needsRefreshment();
 }
 
+void DBManager::rename(const QString &name, int id)
+{
+    QSqlQuery update;
+    const QString updateQuery = "UPDATE routes SET name = ? WHERE id = ?";
+
+    update.prepare(updateQuery);
+    update.bindValue(0, name);
+    update.bindValue(1, QString::number(id));
+
+    if(!update.exec())
+        qDebug() << db.lastError();
+
+    if(bNotify)
+        emit needsRefreshment();
+}
+
 int DBManager::addPoint(const QPointF &point)
 {
     if(currentRoute < 0)
@@ -184,6 +200,38 @@ QPointF DBManager::getPoint(int id)
         return QPointF(select.value(0).toDouble(), select.value(1).toDouble());
 
     return QPointF(0, 0);
+}
+
+void DBManager::changeLongitude(double value, int id)
+{
+    QSqlQuery update;
+    const QString updateQuery = "UPDATE points SET longitude = ? WHERE id = ?";
+
+    update.prepare(updateQuery);
+    update.bindValue(0, QString::number(value));
+    update.bindValue(1, QString::number(id));
+
+    if(!update.exec())
+        qDebug() << db.lastError();
+
+    if(bNotify)
+        emit needsRefreshment();
+}
+
+void DBManager::changeLatitude(double value, int id)
+{
+    QSqlQuery update;
+    const QString updateQuery = "UPDATE points SET latitude = ? WHERE id = ?";
+
+    update.prepare(updateQuery);
+    update.bindValue(0, QString::number(value));
+    update.bindValue(1, QString::number(id));
+
+    if(!update.exec())
+        qDebug() << db.lastError();
+
+    if(bNotify)
+        emit needsRefreshment();
 }
 
 QString DBManager::routeQuery() const

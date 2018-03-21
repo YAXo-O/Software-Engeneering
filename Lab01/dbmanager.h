@@ -19,11 +19,14 @@ public:
     int addRoute(const QString &name);
     void removeRoute(int id);
     void setName(const QString &name);
+    void rename(const QString &name, int id);
 
     int addPoint(const QPointF &point);
     void removePoint(int id);
     void restorePoint(const QPointF &point, int id);
     QPointF getPoint(int id);
+    void changeLongitude(double value, int id);
+    void changeLatitude(double value, int id);
 
     QString routeQuery() const;
     QString pointsQuery() const;

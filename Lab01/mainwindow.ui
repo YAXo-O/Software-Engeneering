@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>936</width>
+    <width>992</width>
     <height>459</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>Route App</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,2,2">
     <item>
      <widget class="QGroupBox" name="routeGroup">
       <property name="title">
@@ -37,41 +37,6 @@
           <widget class="QPushButton" name="removeRoutePushButton">
            <property name="text">
             <string>Remove</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="polylineLabel">
-           <property name="text">
-            <string>Polyline: </string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="statusLabel">
-           <property name="text">
-            <string>Status: </string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="currentStatusLabel">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#005500;&quot;&gt;up-to-date&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="polylineLineEdit">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -110,6 +75,45 @@
       </layout>
      </widget>
     </item>
+    <item>
+     <widget class="QGroupBox" name="editGroup">
+      <property name="title">
+       <string>Edit</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="0">
+        <widget class="QLabel" name="longitudeLabel">
+         <property name="text">
+          <string>Longitude: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="routeNameLabel">
+         <property name="text">
+          <string>Route Name: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="latitudeLabel">
+         <property name="text">
+          <string>Latitude: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="longitudeLine"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="routeNameLine"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="latitudeLine"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -117,7 +121,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>936</width>
+     <width>992</width>
      <height>25</height>
     </rect>
    </property>
@@ -134,6 +138,7 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuPolyline">
     <property name="title">
