@@ -59,7 +59,6 @@ void Presenter::loadFile(const QString &filename)
     if(filename == "")
         return;
 
-    //(std::invalid_argument, std::ios_base::failure)
     try
     {
         cManager.receive(factory.importFile(filename, *model->getDbManager()));
@@ -70,9 +69,8 @@ void Presenter::loadFile(const QString &filename)
     }
     catch(std::invalid_argument &failure)
     {
-        emit sendError("File failure!", "Can't parse .gpx file!", EL_WARNING);
+        emit sendError("File failure!", "Can't parse .gpx file!\n" + QString(failure.what()), EL_WARNING);
     }
-    /* TODO: catch exception and show message box in view */
 }
 
 void Presenter::undo()
@@ -203,10 +201,15 @@ void Presenter::readPolyline(const QString &filename)
 
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly))
+    {
         emit sendError("Read polyline", "Can't read polyline file", EL_WARNING);
+
+        return;
+    }
 
     QTextStream stream(&file);
     QString polyline = stream.readAll();
+    file.close();
 
     QVector<QPointF> points;
     PointsSaver saver(&points);
@@ -220,4 +223,29 @@ void Presenter::writePolyline(const QString &filename)
 {
     if(filename.isNull())
         return;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        emit sendError("Write polyline", "Can't write polyline file", EL_WARNING);
+
+        return;
+    }
+
+    QTextStream stream(&file);
+    QString polyline = "";
+
+    int id = model->getDbManager()->getCurrentRoute();
+    QVector<QPointF> *points = model->getDbManager()->getPoints(id);
+
+    QPointF previous(0, 0);
+    for(auto i : *points)
+    {
+        QString tmp = gpolyline::encode(i.x() - previous.x(), i.y() - previous.y()).data();
+        polyline += tmp;
+        previous = i;
+    }
+
+    stream << polyline;
+    file.close();
 }

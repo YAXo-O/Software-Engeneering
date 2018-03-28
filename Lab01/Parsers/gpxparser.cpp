@@ -33,11 +33,21 @@ void GPXParser::parse(const QString &filename, DBManager &manager)
                     manager.enableNotifications();
                     throw std::invalid_argument("Longitude is abscent");
                 }
+                if(longitude > 180 || longitude < -180)
+                {
+                    manager.enableNotifications();
+                    throw std::invalid_argument("Longitude is out of range!");
+                }
                 double latitude = attrib.value("lat").toDouble(&bOk);
                 if(!bOk)
                 {
                     manager.enableNotifications();
                     throw std::invalid_argument("Latitude is abscent");
+                }
+                if(latitude > 90 || latitude < -90)
+                {
+                    manager.enableNotifications();
+                    throw std::invalid_argument("Latitude is out of range!");
                 }
 
                 manager.addPoint(QPointF(longitude, latitude));

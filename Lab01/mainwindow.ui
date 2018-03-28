@@ -188,10 +188,16 @@
    <property name="text">
     <string>Create route</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
   </action>
   <action name="actionUpdatePolyline">
    <property name="text">
-    <string>Update polyline</string>
+    <string>Save route</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

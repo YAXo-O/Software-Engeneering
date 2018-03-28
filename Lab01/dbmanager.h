@@ -26,7 +26,7 @@ public:
     void removePoint(int id);
     void restorePoint(const QPointF &point, int id);
     QPointF getPoint(int id);
-    QVector<QPointF> getPoints(int routeId);
+    QVector<QPointF> *getPoints(int routeId);
     void changeLongitude(double value, int id);
     void changeLatitude(double value, int id);
 
