@@ -5,6 +5,8 @@
 #include <QModelIndex>
 #include <QItemSelectionModel>
 
+#include "errorlevel.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -29,6 +31,8 @@ public slots:
     void currentRoute(const QString &name);
     void currentPoint(double longitude, double latitude);
 
+    void receiveError(const QString &title, const QString &message, errorLevel level);
+
 signals:
     void loadFile(const QString &filename);
     void undo();
@@ -44,6 +48,9 @@ signals:
 
     void routeTableSelectionChanged(QModelIndex selected);
     void pointsTableSelectionChanged(QModelIndex selected);
+
+    void readPolyline(const QString &filename);
+    void writePolyline(const QString &filename);
 
 private slots:
     void onActionloadTriggered();

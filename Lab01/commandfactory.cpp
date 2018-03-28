@@ -8,6 +8,7 @@
 #include "Commands/renameroute.h"
 #include "Commands/changelongitude.h"
 #include "Commands/changelatitude.h"
+#include "Commands/importpolyline.h"
 
 Command *CommandFactory::importFile(const QString &filename, DBManager &manager)
 {
@@ -52,4 +53,9 @@ Command *CommandFactory::changeLongitude(DBManager &manager, double oldLongitude
 Command *CommandFactory::changeLatitude(DBManager &manager, double oldLatitude, double newLatitude, int id)
 {
     return new ChangeLatitude(oldLatitude, newLatitude, id, manager);
+}
+
+Command *CommandFactory::importPolyline(const QString &name, QVector<QPointF> &points, DBManager &manager)
+{
+    return new ImportPolyline(name, points, manager);
 }

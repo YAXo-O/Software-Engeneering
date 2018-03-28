@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     Commands/changelatitude.cpp \
     pointssaver.cpp \
     model.cpp \
-    presenter.cpp
+    presenter.cpp \
+    Commands/importpolyline.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -62,6 +63,8 @@ HEADERS  += mainwindow.h \
     Commands/changelatitude.h \
     pointssaver.h \
     model.h \
-    presenter.h
+    presenter.h \
+    errorlevel.h \
+    Commands/importpolyline.h
 
 FORMS    += mainwindow.ui

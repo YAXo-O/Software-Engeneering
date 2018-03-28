@@ -120,6 +120,11 @@ void DBManager::rename(const QString &name, int id)
         emit needsRefreshment();
 }
 
+int DBManager::getCurrentRoute() const
+{
+    return currentRoute;
+}
+
 int DBManager::addPoint(const QPointF &point)
 {
     if(currentRoute < 0)

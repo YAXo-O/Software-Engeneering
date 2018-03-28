@@ -1,9 +1,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "Parsers/gpxparser.h"
-#include "../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h"
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -44,6 +41,28 @@ void MainWindow::currentPoint(double longitude, double latitude)
 {
     ui->longitudeLine->setText(QString::number(longitude));
     ui->latitudeLine->setText(QString::number(latitude));
+}
+
+void MainWindow::receiveError(const QString &title, const QString &message, errorLevel level)
+{
+    switch(level)
+    {
+    case EL_INFO:
+        QMessageBox::information(this, title, message);
+        break;
+
+    case EL_WARNING:
+        QMessageBox::warning(this, title, message);
+        break;
+
+    case EL_CRITICAL:
+        QMessageBox::critical(this, title, message);
+        break;
+
+    default:
+        QMessageBox::about(this, title, message);
+        break;
+    }
 }
 
 
@@ -123,8 +142,10 @@ void MainWindow::onActionresetTriggered()
 
 void MainWindow::onActioncreaterouteTriggered()
 {
+    emit readPolyline(QFileDialog::getOpenFileName(this, "Polyline file", QString(), "*.txt"));
 }
 
 void MainWindow::onActionupdatepolylineTriggered()
 {
+    emit writePolyline(QFileDialog::getSaveFileName(this, "Polyline file", QString(), "*.txt"));
 }

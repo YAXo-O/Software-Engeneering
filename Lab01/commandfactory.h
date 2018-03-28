@@ -20,6 +20,7 @@ public:
     Command *removePoint(DBManager &manager, int id);
     Command *changeLongitude(DBManager &manager, double oldLongitude, double newLongitude, int id);
     Command *changeLatitude(DBManager &manager, double oldLatitude, double newLatitude, int id);
+    Command *importPolyline(const QString &name, QVector<QPointF> &points, DBManager &manager);
 
 };
 

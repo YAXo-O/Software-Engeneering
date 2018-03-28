@@ -4,7 +4,9 @@
 
 #include "presenter.h"
 
+#include "../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h"
 #include "model.h"
+#include "pointssaver.h"
 
 Presenter::Presenter(QObject *parent) : QObject(parent), model(nullptr), routesView(nullptr), pointsView(nullptr)
 {
@@ -54,7 +56,22 @@ void Presenter::setConnections()
 
 void Presenter::loadFile(const QString &filename)
 {
-    cManager.receive(factory.importFile(filename, *model->getDbManager()));
+    if(filename == "")
+        return;
+
+    //(std::invalid_argument, std::ios_base::failure)
+    try
+    {
+        cManager.receive(factory.importFile(filename, *model->getDbManager()));
+    }
+    catch(std::ios_base::failure &failure)
+    {
+        emit sendError("File failure!", "Can't open specified file!", EL_WARNING);
+    }
+    catch(std::invalid_argument &failure)
+    {
+        emit sendError("File failure!", "Can't parse .gpx file!", EL_WARNING);
+    }
     /* TODO: catch exception and show message box in view */
 }
 
@@ -176,4 +193,31 @@ void Presenter::pointsTableSelectionChanged(QModelIndex selected)
 void Presenter::currentRouteChanged(int , int )
 {
     model->getPoints()->setQuery(model->getDbManager()->pointsQuery());
+}
+
+void Presenter::readPolyline(const QString &filename)
+{
+    if(filename.isNull())
+        return;
+
+
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly))
+        emit sendError("Read polyline", "Can't read polyline file", EL_WARNING);
+
+    QTextStream stream(&file);
+    QString polyline = stream.readAll();
+
+    QVector<QPointF> points;
+    PointsSaver saver(&points);
+
+    gpolyline::decode(polyline.toStdString(), &saver);
+
+    cManager.receive(factory.importPolyline(filename.split("/").last().split(".").first(), points, *model->getDbManager()));
+}
+
+void Presenter::writePolyline(const QString &filename)
+{
+    if(filename.isNull())
+        return;
 }

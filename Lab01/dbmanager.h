@@ -20,6 +20,7 @@ public:
     void removeRoute(int id);
     void setName(const QString &name);
     void rename(const QString &name, int id);
+    int getCurrentRoute() const;
 
     int addPoint(const QPointF &point);
     void removePoint(int id);

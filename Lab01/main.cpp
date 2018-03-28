@@ -46,5 +46,8 @@ void connectToView(Presenter &presenter, const MainWindow &window)
     QObject::connect(&presenter, SIGNAL(currentName(QString)), &window, SLOT(currentRoute(QString)));
     QObject::connect(&presenter, SIGNAL(currentPoint(double,double)), &window, SLOT(currentPoint(double,double)));
     QObject::connect(&window, SIGNAL(renameRoute(QItemSelectionModel*,QString)), &presenter, SLOT(renameRoute(QItemSelectionModel*,QString)));
+    QObject::connect(&window, SIGNAL(readPolyline(QString)), &presenter, SLOT(readPolyline(QString)));
+    QObject::connect(&window, SIGNAL(writePolyline(QString)), &presenter, SLOT(writePolyline(QString)));
+    QObject::connect(&presenter, SIGNAL(sendError(QString,QString,errorLevel)), &window, SLOT(receiveError(QString,QString,errorLevel)));
 }
 

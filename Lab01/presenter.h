@@ -7,6 +7,7 @@
 
 #include "commandmanager.h"
 #include "commandfactory.h"
+#include "errorlevel.h"
 
 class Model;
 class QTableView;
@@ -44,9 +45,13 @@ public slots:
     void pointsTableSelectionChanged(QModelIndex selected);
     void currentRouteChanged(int old, int currnet);
 
+    void readPolyline(const QString &filename);
+    void writePolyline(const QString &filename);
+
 signals:
     void currentName(const QString &name);
     void currentPoint(double longitude, double latitude);
+    void sendError(const QString &title, const QString &message, errorLevel level);
 
 private:
     Model *model;
