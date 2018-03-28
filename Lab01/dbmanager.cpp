@@ -202,6 +202,21 @@ QPointF DBManager::getPoint(int id)
     return QPointF(0, 0);
 }
 
+QVector<QPointF> DBManager::getPoints(int routeId)
+{
+    QSqlQuery select;
+    QString selectQuery = "SELECT longitude, latitude FROM points WHERE id = " + QString::number(routeId);
+
+    if(!select.exec(selectQuery))
+        qDebug() << db.lastError();
+
+    QVector<QPointF> result;
+    while(select.next())
+        result.append(QPointF(select.value(0).toDouble(), select.value(1).toDouble()));
+
+    return result;
+}
+
 void DBManager::changeLongitude(double value, int id)
 {
     QSqlQuery update;

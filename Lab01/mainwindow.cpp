@@ -2,6 +2,7 @@
 #include <QMessageBox>
 
 #include "Parsers/gpxparser.h"
+#include "../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -14,13 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Tables setup
-    ui->routeTableView->setModel(&routes);
-    ui->pointTableView->setModel(&points);
     ui->routeTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     setValidators();
-    setConnections();
 }
 
 MainWindow::~MainWindow()
@@ -28,22 +25,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::onActionloadTriggered()
+QTableView *MainWindow::getRoutesView() const
 {
-    QStringList filename = QFileDialog::getOpenFileNames(nullptr, "GPX File", QString(), "*.gpx");
-    if(filename.isEmpty())
-        return;
-    try
-    {
-        for(auto i : filename)
-            cmd.Receive(factory.importFile(i, manager));
-    }
-    catch(std::exception &e)
-    {
-        QMessageBox::information(nullptr, "Read file error", e.what());
-    }
+    return ui->routeTableView;
 }
+
+QTableView *MainWindow::getPointsView() const
+{
+    return ui->pointTableView;
+}
+
+void MainWindow::currentRoute(const QString &name)
+{
+    ui->routeNameLine->setText(name);
+}
+
+void MainWindow::currentPoint(double longitude, double latitude)
+{
+    ui->longitudeLine->setText(QString::number(longitude));
+    ui->latitudeLine->setText(QString::number(latitude));
+}
+
 
 void MainWindow::setConnections()
 {
@@ -51,125 +53,47 @@ void MainWindow::setConnections()
     connect(ui->routeTableView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             [this](QModelIndex selected, QModelIndex)
     {
-        QModelIndex data = routes.index(selected.row(), 0);
-        manager.selectRoute(routes.data(data).toInt());
-
-        data = routes.index(selected.row(), 1);
-        ui->routeNameLine->setText(routes.data(data).toString());
+        emit routeTableSelectionChanged(selected);
     });
     connect(ui->pointTableView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             [this](QModelIndex selected, QModelIndex)
     {
-        QModelIndex data = points.index(selected.row(), 1);
-        ui->longitudeLine->setText(points.data(data).toString());
-
-        data = points.index(selected.row(), 2);
-        ui->latitudeLine->setText(points.data(data).toString());
+        emit pointsTableSelectionChanged(selected);
     });
 
     // Data user changed
     connect(ui->routeNameLine, &QLineEdit::returnPressed, [this]()
     {
-        QItemSelectionModel *selection = ui->routeTableView->selectionModel();
-        QModelIndexList rows = selection->selectedIndexes();
-        if(rows.size())
-        {
-            int row = rows.first().row();
-            QModelIndex index = routes.index(row, 0);
-
-            manager.rename(ui->routeNameLine->text(), routes.data(index).toInt());
-        }
+        emit renameRoute(ui->routeTableView->selectionModel(), ui->routeNameLine->text());
     });
     connect(ui->longitudeLine, &QLineEdit::returnPressed, [this]()
     {
-        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
-        QModelIndexList rows = selection->selectedIndexes();
-        if(rows.size())
-        {
-            int row = rows.first().row();
-            QModelIndex index = points.index(row, 0);
-
-            manager.changeLongitude(ui->longitudeLine->text().toDouble(), points.data(index).toInt());
-        }
+        emit changeLongitude(ui->pointTableView->selectionModel(), ui->longitudeLine->text().toDouble());
     });
     connect(ui->latitudeLine, &QLineEdit::returnPressed, [this]()
     {
-        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
-        QModelIndexList rows = selection->selectedIndexes();
-        if(rows.size())
-        {
-            int row = rows.first().row();
-            QModelIndex index = points.index(row, 0);
-
-            manager.changeLatitude(ui->latitudeLine->text().toDouble(), points.data(index).toInt());
-        }
-    });
-
-    // Manager selection changed
-    connect(&manager, &DBManager::selectionChanged, [this](int , int)
-    {
-       points.setQuery(manager.pointsQuery());
-    });
-
-    connect(&manager, &DBManager::needsRefreshment, [this]()
-    {
-        routes.setQuery(manager.routeQuery());
-        points.setQuery(manager.pointsQuery());
+        emit changeLatitude(ui->pointTableView->selectionModel(), ui->latitudeLine->text().toDouble());
     });
 
     // Actions connections
     connect(ui->actionLoad, SIGNAL(triggered()), SLOT(onActionloadTriggered()));
-    connect(ui->actionUndo, SIGNAL(triggered()), SLOT(onActionundoTriggered()));
-    connect(ui->actionRedo, SIGNAL(triggered()), SLOT(onActionredoTriggered()));
+    connect(ui->actionUndo, SIGNAL(triggered()), SIGNAL(undo()));
+    connect(ui->actionRedo, SIGNAL(triggered()), SIGNAL(redo()));
     connect(ui->actionReset, SIGNAL(triggered()), SLOT(onActionresetTriggered()));
+    connect(ui->actionCreateRoute, SIGNAL(triggered()), SLOT(onActioncreaterouteTriggered()));
+    connect(ui->actionUpdatePolyline, SIGNAL(triggered()), SLOT(onActionupdatepolylineTriggered()));
 
     // Buttons connections
-    connect(ui->addRoutePushButton, &QPushButton::clicked, [this]()
-    {
-        cmd.Receive(factory.createRoute(manager));
-    });
+    connect(ui->addRoutePushButton, SIGNAL(clicked()), SIGNAL(createRoute()));
     connect(ui->removeRoutePushButton, &QPushButton::clicked, [this]()
     {
-        QItemSelectionModel *selection = ui->routeTableView->selectionModel();
-        QModelIndexList rows = selection->selectedIndexes();
-        if(rows.size())
-        {
-            int row = rows.front().row();
-            int id = routes.data(routes.index(row, 0)).toInt();
-            cmd.Receive(factory.removeRoute(manager, id));
-        }
+        emit removeRoute(ui->routeTableView->selectionModel());
     });
-    connect(ui->addPointPushButton, &QPushButton::clicked, [this]()
-    {
-        cmd.Receive(factory.createPoint(manager, QPointF(0, 0)));
-    });
+    connect(ui->addPointPushButton, SIGNAL(clicked()), SIGNAL(createPoint()));
     connect(ui->removePointPushButton, &QPushButton::clicked, [this]()
     {
-        QItemSelectionModel *selection = ui->pointTableView->selectionModel();
-        QModelIndexList rows = selection->selectedIndexes();
-        if(rows.size())
-        {
-            int row = rows.front().row();
-            int id = points.data(points.index(row, 0)).toInt();
-            cmd.Receive(factory.removePoint(manager, id));
-        }
+        emit removePoint(ui->pointTableView->selectionModel());
     });
-}
-
-void MainWindow::onActionundoTriggered()
-{
-    cmd.undo();
-}
-
-void MainWindow::onActionredoTriggered()
-{
-    cmd.redo();
-}
-
-void MainWindow::onActionresetTriggered()
-{
-    if(QMessageBox::warning(nullptr, "Reset operation", "This operation is undoable!") == QMessageBox::Ok)
-        cmd.Receive(factory.reset(manager));
 }
 
 void MainWindow::setValidators()
@@ -179,4 +103,28 @@ void MainWindow::setValidators()
 
     ui->longitudeLine->setValidator(longitudeVal);
     ui->latitudeLine->setValidator(latitudeVal);
+}
+
+void MainWindow::onActionloadTriggered()
+{
+    QStringList filename = QFileDialog::getOpenFileNames(nullptr, "GPX File", QString(), "*.gpx");
+    if(filename.isEmpty())
+        return;
+
+    for(auto i : filename)
+        emit loadFile(i);
+}
+
+void MainWindow::onActionresetTriggered()
+{
+    if(QMessageBox::warning(nullptr, "Reset operation", "This operation is not undoable!") == QMessageBox::Ok)
+        emit doReset();
+}
+
+void MainWindow::onActioncreaterouteTriggered()
+{
+}
+
+void MainWindow::onActionupdatepolylineTriggered()
+{
 }

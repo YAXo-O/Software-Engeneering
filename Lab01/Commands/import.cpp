@@ -14,3 +14,8 @@ void Import::exec()
 void Import::reject()
 {
 }
+
+bool Import::isUndoable()
+{
+    return false;
+}

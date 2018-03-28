@@ -1,39 +1,37 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PRESENTER_H
+#define PRESENTER_H
 
-#include <QMainWindow>
+#include <QObject>
 #include <QModelIndex>
 #include <QItemSelectionModel>
 
-namespace Ui {
-    class MainWindow;
-}
+#include "commandmanager.h"
+#include "commandfactory.h"
 
-class Presenter;
+class Model;
 class QTableView;
 
-class MainWindow : public QMainWindow
+class Presenter : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit Presenter(QObject *parent = nullptr);
 
+    Model *getModel() const;
     QTableView *getRoutesView() const;
     QTableView *getPointsView() const;
+
+    void setModel(Model *value);
+    void setRoutesView(QTableView *value);
+    void setPointsView(QTableView *value);
 
     void setConnections();
 
 public slots:
-    void currentRoute(const QString &name);
-    void currentPoint(double longitude, double latitude);
-
-signals:
     void loadFile(const QString &filename);
     void undo();
     void redo();
-    void doReset();
+    void reset();
     void renameRoute(QItemSelectionModel *selection, const QString &newName);
     void changeLongitude(QItemSelectionModel *selection, double newLongitude);
     void changeLatitude(QItemSelectionModel *selection, double newLatitude);
@@ -44,17 +42,19 @@ signals:
 
     void routeTableSelectionChanged(QModelIndex selected);
     void pointsTableSelectionChanged(QModelIndex selected);
+    void currentRouteChanged(int old, int currnet);
 
-private slots:
-    void onActionloadTriggered();
-    void onActionresetTriggered();
-    void onActioncreaterouteTriggered();
-    void onActionupdatepolylineTriggered();
+signals:
+    void currentName(const QString &name);
+    void currentPoint(double longitude, double latitude);
 
 private:
-    Ui::MainWindow *ui;
+    Model *model;
+    QTableView *routesView;
+    QTableView *pointsView;
+    CommandManager cManager;
+    CommandFactory factory;
 
-    void setValidators();
 };
 
-#endif // MAINWINDOW_H
+#endif // PRESENTER_H

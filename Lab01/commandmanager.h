@@ -10,7 +10,7 @@ public:
     CommandManager() = default;
     ~CommandManager();
 
-    void Receive(Command *cmd);
+    void receive(Command *cmd);
     void undo();
     void redo();
     void repeat();

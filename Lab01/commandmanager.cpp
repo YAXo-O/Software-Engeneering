@@ -8,7 +8,7 @@ CommandManager::~CommandManager()
         delete i;
 }
 
-void CommandManager::Receive(Command *cmd)
+void CommandManager::receive(Command *cmd)
 {
     cmd->exec();
     if(cmd->isUndoable())

@@ -36,7 +36,13 @@ SOURCES += main.cpp\
     Commands/removeroute.cpp \
     Commands/createpoint.cpp \
     Commands/removepoint.cpp \
-    ../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.cpp
+    ../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.cpp \
+    Commands/renameroute.cpp \
+    Commands/changelongitude.cpp \
+    Commands/changelatitude.cpp \
+    pointssaver.cpp \
+    model.cpp \
+    presenter.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -50,6 +56,12 @@ HEADERS  += mainwindow.h \
     Commands/removeroute.h \
     Commands/createpoint.h \
     Commands/removepoint.h \
-    ../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h
+    ../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h \
+    Commands/renameroute.h \
+    Commands/changelongitude.h \
+    Commands/changelatitude.h \
+    pointssaver.h \
+    model.h \
+    presenter.h
 
 FORMS    += mainwindow.ui

@@ -14,6 +14,8 @@ public:
     void exec() override;
     void reject() override;
 
+    bool isUndoable() override;
+
 private:
     const QString filename;
     DBManager &manager;
