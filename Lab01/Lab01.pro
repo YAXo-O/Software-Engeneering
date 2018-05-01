@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml sql
+QT       += core gui xml sql testlib positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,7 +43,12 @@ SOURCES += main.cpp\
     pointssaver.cpp \
     model.cpp \
     presenter.cpp \
-    Commands/importpolyline.cpp
+    Commands/importpolyline.cpp \
+    Tests/testpolyline.cpp \
+    Visitors/abstractvisitor.cpp \
+    Visitors/visitorturns.cpp \
+    Visitors/visitorvertical.cpp \
+    Visitors/visitorsearchdownhills.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -65,6 +70,11 @@ HEADERS  += mainwindow.h \
     model.h \
     presenter.h \
     errorlevel.h \
-    Commands/importpolyline.h
+    Commands/importpolyline.h \
+    Tests/testpolyline.h \
+    Visitors/abstractvisitor.h \
+    Visitors/visitorturns.h \
+    Visitors/visitorvertical.h \
+    Visitors/visitorsearchdownhills.h
 
 FORMS    += mainwindow.ui

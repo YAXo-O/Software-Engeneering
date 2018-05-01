@@ -4,6 +4,7 @@
 #include "model.h"
 
 #include "dbmanager.h"
+#include "Visitors/abstractvisitor.h"
 
 Model::Model(QObject *parent) : QObject(parent), routes(nullptr), points(nullptr), dbManager(nullptr)
 {
@@ -39,6 +40,12 @@ void Model::setDbManager(DBManager *value)
     dbManager = value;
 
     connect(dbManager, SIGNAL(needsRefreshment()), SIGNAL(needsUpdate()));
+}
+
+void Model::acceptVisitor(AbstractVisitor *visitor)
+{
+    if(visitor)
+        visitor->operator()(*this);
 }
 
 void Model::init()

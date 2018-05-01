@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QDateTime>
+#include <QGeoCoordinate>
 
 #include "dbmanager.h"
 
@@ -129,6 +130,16 @@ int DBManager::addPoint(const QPointF &point)
 {
     if(currentRoute < 0)
         return -1;
+
+    QSqlQuery select;
+    /*const QString selectQuery = "SELECT longitude, latitude, route limit 1"
+                                "FROM points"
+                                "WHERE route = " + currentRoute +
+                                "ORDER BY id";
+
+    if(!select.exec(selectQuery))
+        qDebug() << db.lastError();
+    */
 
     QSqlQuery insert;
     const QString insertQuery = "INSERT INTO points(longitude, latitude, route)"

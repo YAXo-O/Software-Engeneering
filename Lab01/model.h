@@ -5,6 +5,7 @@
 
 class DBManager;
 class QSqlQueryModel;
+class AbstractVisitor;
 
 class Model : public QObject
 {
@@ -19,6 +20,8 @@ public:
     void setRoutes(QSqlQueryModel *routesModel);
     void setPoints(QSqlQueryModel *pointsModel);
     void setDbManager(DBManager *dbmanager);
+
+    void acceptVisitor(AbstractVisitor *visitor);
 
     void init();
 
