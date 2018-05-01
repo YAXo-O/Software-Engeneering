@@ -1,6 +1,7 @@
 #ifndef IMPORTPOLYLINE_H
 #define IMPORTPOLYLINE_H
 
+#include <QGeoCoordinate>
 #include <QString>
 
 #include "./command.h"
@@ -13,7 +14,7 @@ class DBManager;
 class ImportPolyline : public Command
 {
 public:
-    ImportPolyline(const QString &name, QVector<QPointF> &points, DBManager &manager);
+    ImportPolyline(const QString &name, QVector<QGeoCoordinate> &coordinates, DBManager &manager);
     ~ImportPolyline() override {}
 
     void exec() override;
@@ -23,7 +24,7 @@ public:
 
 private:
     const QString &name;
-    QVector<QPointF> &points;
+    QVector<QGeoCoordinate> &coordinates;
     DBManager &manager;
 };
 

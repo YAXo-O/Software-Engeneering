@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QGeoCoordinate>
 #include <QXMLStreamReader>
 
 #include "gpxparser.h"
@@ -50,7 +51,7 @@ void GPXParser::parse(const QString &filename, DBManager &manager)
                     throw std::invalid_argument("Latitude is out of range!");
                 }
 
-                manager.addPoint(QPointF(longitude, latitude));
+                manager.addPoint(QGeoCoordinate(longitude, latitude));
             }
         }
     }

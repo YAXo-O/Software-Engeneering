@@ -1,7 +1,7 @@
 #ifndef POINTSSAVER_H
 #define POINTSSAVER_H
 
-#include <QPointF>
+#include <QGeoCoordinate>
 #include "../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h"
 
 template<typename T>
@@ -10,13 +10,13 @@ class QVector;
 class PointsSaver : public gpolyline::DecoderFunctor
 {
 public:
-    PointsSaver(QVector<QPointF> *holder);
+    PointsSaver(QVector<QGeoCoordinate> *holder);
     ~PointsSaver() override {}
 
     void operator()(double longitude, double latitude) override;
 
 private:
-    QVector<QPointF> *points;
+    QVector<QGeoCoordinate> *coordinates;
 };
 
 #endif // POINTSSAVER_H

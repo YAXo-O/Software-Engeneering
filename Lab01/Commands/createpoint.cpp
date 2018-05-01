@@ -1,15 +1,16 @@
 #include "createpoint.h"
 
-CreatePoint::CreatePoint(DBManager &_manager, const QPointF &_point): Command(), manager(_manager), point(_point), id(-1)
+CreatePoint::CreatePoint(DBManager &_manager, const QGeoCoordinate &_coordinate):
+    Command(), manager(_manager), coordinate(_coordinate), id(-1)
 {
 }
 
 void CreatePoint::exec()
 {
     if(id == -1)
-        id = manager.addPoint(point);
+        id = manager.addPoint(coordinate);
     else
-        manager.restorePoint(point, id);
+        manager.restorePoint(coordinate, id);
 
 }
 

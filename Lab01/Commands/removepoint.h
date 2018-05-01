@@ -1,7 +1,7 @@
 #ifndef REMOVEPOINT_H
 #define REMOVEPOINT_H
 
-#include <QPointF>
+#include <QGeoCoordinate>
 
 #include "command.h"
 #include "./dbmanager.h"
@@ -17,7 +17,7 @@ public:
 
 private:
     DBManager &manager;
-    QPointF point;
+    QGeoCoordinate coordinate;
     int id;
 };
 

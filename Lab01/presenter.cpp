@@ -135,6 +135,21 @@ void Presenter::changeLatitude(QItemSelectionModel *selection, double newLatitud
 
 }
 
+void Presenter::changeHeight(QItemSelectionModel *selection, double newHeight)
+{
+    QModelIndexList rows = selection->selectedIndexes();
+    if(rows.size())
+    {
+        int row = rows.first().row();
+        QModelIndex index = model->getPoints()->index(row, 0);
+        int id = model->getPoints()->data(index).toInt();
+        index = model->getPoints()->index(row, 3);
+        double oldHeight = model->getPoints()->data(index).toDouble();
+
+        cManager.receive(factory.changeHeight(*model->getDbManager(), oldHeight, newHeight, id));
+    }
+}
+
 void Presenter::createRoute()
 {
     cManager.receive(factory.createRoute(*model->getDbManager()));
@@ -154,7 +169,7 @@ void Presenter::removeRoute(QItemSelectionModel *selection)
 
 void Presenter::createPoint()
 {
-    cManager.receive(factory.createPoint(*model->getDbManager(), QPointF(0, 0)));
+    cManager.receive(factory.createPoint(*model->getDbManager(), QGeoCoordinate(0, 0, 0)));
 }
 
 void Presenter::removePoint(QItemSelectionModel *selection)
@@ -184,8 +199,10 @@ void Presenter::pointsTableSelectionChanged(QModelIndex selected)
     double longitude = model->getPoints()->data(data).toDouble();
     data = model->getPoints()->index(selected.row(), 2);
     double latitude = model->getPoints()->data(data).toDouble();
+    data = model->getPoints()->index(selected.row(), 3);
+    double height = model->getPoints()->data(data).toDouble();
 
-    emit currentPoint(longitude, latitude);
+    emit currentPoint(longitude, latitude, height);
 }
 
 void Presenter::currentRouteChanged(int , int )
@@ -211,12 +228,12 @@ void Presenter::readPolyline(const QString &filename)
     QString polyline = stream.readAll();
     file.close();
 
-    QVector<QPointF> points;
-    PointsSaver saver(&points);
+    QVector<QGeoCoordinate> coordinates;
+    PointsSaver saver(&coordinates);
 
     gpolyline::decode(polyline.toStdString(), &saver);
 
-    cManager.receive(factory.importPolyline(filename.split("/").last().split(".").first(), points, *model->getDbManager()));
+    cManager.receive(factory.importPolyline(filename.split("/").last().split(".").first(), coordinates, *model->getDbManager()));
 }
 
 void Presenter::writePolyline(const QString &filename)
@@ -236,12 +253,12 @@ void Presenter::writePolyline(const QString &filename)
     QString polyline = "";
 
     int id = model->getDbManager()->getCurrentRoute();
-    QVector<QPointF> *points = model->getDbManager()->getPoints(id);
+    QVector<QGeoCoordinate> *coordinates = model->getDbManager()->getPoints(id);
 
-    QPointF previous(0, 0);
-    for(auto i : *points)
+    QGeoCoordinate previous(0, 0, 0);
+    for(auto i : *coordinates)
     {
-        QString tmp = gpolyline::encode(i.x() - previous.x(), i.y() - previous.y()).data();
+        QString tmp = gpolyline::encode(i.longitude() - previous.longitude(), i.latitude() - previous.latitude()).data();
         polyline += tmp;
         previous = i;
     }

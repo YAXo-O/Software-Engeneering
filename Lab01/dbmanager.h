@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QString>
-#include <QPointF>
 #include <QtSql>
+#include <QGeoCoordinate>
 
 const QString routeCopyPrefix = "routeCopy";
 const QString pointsCopyPrefix = "pointsCopy";
@@ -22,13 +22,14 @@ public:
     void rename(const QString &name, int id);
     int getCurrentRoute() const;
 
-    int addPoint(const QPointF &point);
+    int addPoint(const QGeoCoordinate &coordinate);
     void removePoint(int id);
-    void restorePoint(const QPointF &point, int id);
-    QPointF getPoint(int id);
-    QVector<QPointF> *getPoints(int routeId);
+    void restorePoint(const QGeoCoordinate &coordinate, int id);
+    QGeoCoordinate getPoint(int id);
+    QVector<QGeoCoordinate> *getPoints(int routeId);
     void changeLongitude(double value, int id);
     void changeLatitude(double value, int id);
+    void changeHeight(double value, int id);
 
     QString routeQuery() const;
     QString pointsQuery() const;

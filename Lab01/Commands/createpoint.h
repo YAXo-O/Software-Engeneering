@@ -1,7 +1,7 @@
 #ifndef CREATEPOINT_H
 #define CREATEPOINT_H
 
-#include <QPointF>
+#include <QGeoCoordinate>
 
 #include "./command.h"
 #include "../dbmanager.h"
@@ -9,7 +9,7 @@
 class CreatePoint : public Command
 {
 public:
-    CreatePoint(DBManager &manager, const QPointF &point);
+    CreatePoint(DBManager &manager, const QGeoCoordinate &coordinate);
     ~CreatePoint() override {}
 
     void exec() override;
@@ -17,7 +17,7 @@ public:
 
 private:
     DBManager &manager;
-    QPointF point;
+    QGeoCoordinate coordinate;
     int id;
 };
 

@@ -36,6 +36,7 @@ public slots:
     void renameRoute(QItemSelectionModel *selection, const QString &newName);
     void changeLongitude(QItemSelectionModel *selection, double newLongitude);
     void changeLatitude(QItemSelectionModel *selection, double newLatitude);
+    void changeHeight(QItemSelectionModel *selection, double newHeight);
     void createRoute();
     void removeRoute(QItemSelectionModel *selection);
     void createPoint();
@@ -50,7 +51,7 @@ public slots:
 
 signals:
     void currentName(const QString &name);
-    void currentPoint(double longitude, double latitude);
+    void currentPoint(double longitude, double latitude, double height);
     void sendError(const QString &title, const QString &message, errorLevel level);
 
 private:

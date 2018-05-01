@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     Visitors/abstractvisitor.cpp \
     Visitors/visitorturns.cpp \
     Visitors/visitorvertical.cpp \
-    Visitors/visitorsearchdownhills.cpp
+    Visitors/visitorsearchdownhills.cpp \
+    Commands/changeheight.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -75,6 +76,7 @@ HEADERS  += mainwindow.h \
     Visitors/abstractvisitor.h \
     Visitors/visitorturns.h \
     Visitors/visitorvertical.h \
-    Visitors/visitorsearchdownhills.h
+    Visitors/visitorsearchdownhills.h \
+    Commands/changeheight.h
 
 FORMS    += mainwindow.ui

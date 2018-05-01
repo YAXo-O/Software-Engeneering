@@ -1,17 +1,17 @@
 #include <QVector>
 #include "pointssaver.h"
 
-PointsSaver::PointsSaver(QVector<QPointF> *holder): gpolyline::DecoderFunctor(), points(holder)
+PointsSaver::PointsSaver(QVector<QGeoCoordinate> *holder): gpolyline::DecoderFunctor(), coordinates(holder)
 {
 }
 
 void PointsSaver::operator()(double longitude, double latitude)
 {
-    if(!points)
+    if(!coordinates)
         return;
 
-    if(points->size())
-        points->append(QPointF(points->back().x() + longitude, points->back().y() + latitude));
+    if(coordinates->size())
+        coordinates->append(QGeoCoordinate(coordinates->back().longitude() + longitude, coordinates->back().latitude() + latitude));
     else
-        points->append(QPointF(longitude, latitude));
+        coordinates->append(QGeoCoordinate(longitude, latitude));
 }

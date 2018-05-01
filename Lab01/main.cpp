@@ -39,12 +39,14 @@ void connectToView(Presenter &presenter, const MainWindow &window)
                      &presenter, SLOT(changeLongitude(QItemSelectionModel*,double)));
     QObject::connect(&window, SIGNAL(changeLatitude(QItemSelectionModel*,double)),
                      &presenter, SLOT(changeLatitude(QItemSelectionModel*,double)));
+    QObject::connect(&window, SIGNAL(changeHeight(QItemSelectionModel*,double)),
+                     &presenter, SLOT(changeHeight(QItemSelectionModel*,double)));
     QObject::connect(&window, SIGNAL(undo()), &presenter, SLOT(undo()));
     QObject::connect(&window, SIGNAL(redo()), &presenter, SLOT(redo()));
     QObject::connect(&window, SIGNAL(routeTableSelectionChanged(QModelIndex)), &presenter, SLOT(routeTableSelectionChanged(QModelIndex)));
     QObject::connect(&window, SIGNAL(pointsTableSelectionChanged(QModelIndex)), &presenter, SLOT(pointsTableSelectionChanged(QModelIndex)));
     QObject::connect(&presenter, SIGNAL(currentName(QString)), &window, SLOT(currentRoute(QString)));
-    QObject::connect(&presenter, SIGNAL(currentPoint(double,double)), &window, SLOT(currentPoint(double,double)));
+    QObject::connect(&presenter, SIGNAL(currentPoint(double,double, double)), &window, SLOT(currentPoint(double,double, double)));
     QObject::connect(&window, SIGNAL(renameRoute(QItemSelectionModel*,QString)), &presenter, SLOT(renameRoute(QItemSelectionModel*,QString)));
     QObject::connect(&window, SIGNAL(readPolyline(QString)), &presenter, SLOT(readPolyline(QString)));
     QObject::connect(&window, SIGNAL(writePolyline(QString)), &presenter, SLOT(writePolyline(QString)));

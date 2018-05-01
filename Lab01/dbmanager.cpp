@@ -26,6 +26,7 @@ DBManager::DBManager(): QWidget(), currentRoute(0), serial(0), bNotify(true)
                                     "id INTEGER PRIMARY KEY,"
                                     "longitude REAL NOT NULL DEFAULT 0,"
                                     "latitude REAL NOT NULL DEFAULT 0,"
+                                    "height REAL NOT NULL DEFAULT 0,"
                                     "route INTEGER NOT NULL DEFAULT 0,"
                                     "FOREIGN KEY(route) REFERENCES routes(id))";
 
@@ -126,29 +127,20 @@ int DBManager::getCurrentRoute() const
     return currentRoute;
 }
 
-int DBManager::addPoint(const QPointF &point)
+int DBManager::addPoint(const QGeoCoordinate &coordinate)
 {
     if(currentRoute < 0)
         return -1;
 
-    QSqlQuery select;
-    /*const QString selectQuery = "SELECT longitude, latitude, route limit 1"
-                                "FROM points"
-                                "WHERE route = " + currentRoute +
-                                "ORDER BY id";
-
-    if(!select.exec(selectQuery))
-        qDebug() << db.lastError();
-    */
-
     QSqlQuery insert;
-    const QString insertQuery = "INSERT INTO points(longitude, latitude, route)"
-                                "VALUES(?, ?, ?)";
+    const QString insertQuery = "INSERT INTO points(longitude, latitude, height, route)"
+                                "VALUES(?, ?, ?, ?)";
 
     insert.prepare(insertQuery);
-    insert.bindValue(0, QString::number(point.x()));
-    insert.bindValue(1, QString::number(point.y()));
-    insert.bindValue(2, QString::number(currentRoute));
+    insert.bindValue(0, QString::number(coordinate.longitude()));
+    insert.bindValue(1, QString::number(coordinate.latitude()));
+    insert.bindValue(2, QString::number(coordinate.altitude()));
+    insert.bindValue(3, QString::number(currentRoute));
 
     if(!insert.exec())
         qDebug() << db.lastError();
@@ -182,20 +174,21 @@ void DBManager::removePoint(int id)
         emit needsRefreshment();
 }
 
-void DBManager::restorePoint(const QPointF &point, int id)
+void DBManager::restorePoint(const QGeoCoordinate &coordinate, int id)
 {
     if(currentRoute < 0)
         return;
 
     QSqlQuery insert;
-    const QString insertQuery = "INSERT INTO points(id, longitude, latitude, route)"
-                                "VALUES(?, ?, ?, ?)";
+    const QString insertQuery = "INSERT INTO points(id, longitude, latitude, height, route)"
+                                "VALUES(?, ?, ?, ?, ?)";
 
     insert.prepare(insertQuery);
     insert.bindValue(0, QString::number(id));
-    insert.bindValue(1, QString::number(point.x()));
-    insert.bindValue(2, QString::number(point.y()));
-    insert.bindValue(3, QString::number(currentRoute));
+    insert.bindValue(1, QString::number(coordinate.longitude()));
+    insert.bindValue(2, QString::number(coordinate.latitude()));
+    insert.bindValue(3, QString::number(coordinate.altitude()));
+    insert.bindValue(4, QString::number(currentRoute));
 
     if(!insert.exec())
         qDebug() << db.lastError();
@@ -204,31 +197,31 @@ void DBManager::restorePoint(const QPointF &point, int id)
         emit needsRefreshment();
 }
 
-QPointF DBManager::getPoint(int id)
+QGeoCoordinate DBManager::getPoint(int id)
 {
     QSqlQuery select;
-    QString selectQuery = "SELECT longitude, latitude FROM points WHERE id = " + QString::number(id);
+    QString selectQuery = "SELECT longitude, latitude, height FROM points WHERE id = " + QString::number(id);
 
     if(!select.exec(selectQuery))
         qDebug() << db.lastError();
 
     if(select.next())
-        return QPointF(select.value(0).toDouble(), select.value(1).toDouble());
+        return QGeoCoordinate(select.value(0).toDouble(), select.value(1).toDouble(), select.value(2).toDouble());
 
-    return QPointF(0, 0);
+    return QGeoCoordinate();
 }
 
-QVector<QPointF> *DBManager::getPoints(int routeId)
+QVector<QGeoCoordinate> *DBManager::getPoints(int routeId)
 {
     QSqlQuery select;
-    QString selectQuery = "SELECT longitude, latitude FROM points WHERE route = " + QString::number(routeId);
+    QString selectQuery = "SELECT longitude, latitude, height FROM points WHERE route = " + QString::number(routeId);
 
     if(!select.exec(selectQuery))
         qDebug() << db.lastError();
 
-    QVector<QPointF> *result = new QVector<QPointF>;
+    QVector<QGeoCoordinate> *result = new QVector<QGeoCoordinate>;
     while(select.next())
-        result->append(QPointF(select.value(0).toDouble(), select.value(1).toDouble()));
+        result->append(QGeoCoordinate(select.value(0).toDouble(), select.value(1).toDouble(), select.value(2).toDouble()));
 
     return result;
 }
@@ -265,6 +258,23 @@ void DBManager::changeLatitude(double value, int id)
         emit needsRefreshment();
 }
 
+void DBManager::changeHeight(double value, int id)
+{
+    QSqlQuery update;
+    const QString updateQuery = "UPDATE points SET height = ? WHERE id = ?";
+
+    update.prepare(updateQuery);
+    update.bindValue(0, QString::number(value));
+    update.bindValue(1, QString::number(id));
+
+    if(!update.exec())
+        qDebug() << db.lastError();
+
+    if(bNotify)
+        emit needsRefreshment();
+
+}
+
 QString DBManager::routeQuery() const
 {
     return "SELECT id, name AS Name, len AS 'Route Length', creationDate AS 'Creation Date' FROM routes";
@@ -272,7 +282,7 @@ QString DBManager::routeQuery() const
 
 QString DBManager::pointsQuery() const
 {
-    return "SELECT id, longitude AS 'Longitude', latitude AS 'Latitude'"
+    return "SELECT id, longitude AS 'Longitude', latitude AS 'Latitude', height as 'Height'"
            "FROM points WHERE route = " + QString::number(currentRoute);
 }
 
@@ -321,6 +331,7 @@ void DBManager::backupRoute(int id)
                                         "(id INTEGER PRIMARY KEY,"
                                         "longitude REAL NOT NULL DEFAULT 0,"
                                         "latitude REAL NOT NULL DEFAULT 0,"
+                                        "height REAL NOT NULL DEFAULT 0,"
                                         "route INTEGER NOT NULL DEFAULT 0)";
 
     if(!createBackupRuote.exec(createRouteBackupQuery) || !createBackupPoints.exec(createPointsBackupQuery))

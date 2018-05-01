@@ -7,11 +7,11 @@ RemovePoint::RemovePoint(DBManager &_manager, int _id):
 
 void RemovePoint::exec()
 {
-    point = manager.getPoint(id);
+    coordinate = manager.getPoint(id);
     manager.removePoint(id);
 }
 
 void RemovePoint::reject()
 {
-    manager.restorePoint(point, id);
+    manager.restorePoint(coordinate, id);
 }

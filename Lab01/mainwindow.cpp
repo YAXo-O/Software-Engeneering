@@ -37,10 +37,11 @@ void MainWindow::currentRoute(const QString &name)
     ui->routeNameLine->setText(name);
 }
 
-void MainWindow::currentPoint(double longitude, double latitude)
+void MainWindow::currentPoint(double longitude, double latitude, double height)
 {
     ui->longitudeLine->setText(QString::number(longitude));
     ui->latitudeLine->setText(QString::number(latitude));
+    ui->heightLine->setText(QString::number(height));
 }
 
 void MainWindow::receiveError(const QString &title, const QString &message, errorLevel level)
@@ -93,6 +94,10 @@ void MainWindow::setConnections()
     {
         emit changeLatitude(ui->pointTableView->selectionModel(), ui->latitudeLine->text().toDouble());
     });
+    connect(ui->heightLine, &QLineEdit::returnPressed, [this]()
+    {
+        emit changeHeight(ui->pointTableView->selectionModel(), ui->heightLine->text().toDouble());
+    });
 
     // Actions connections
     connect(ui->actionLoad, SIGNAL(triggered()), SLOT(onActionloadTriggered()));
@@ -119,9 +124,11 @@ void MainWindow::setValidators()
 {
     QDoubleValidator *longitudeVal = new QDoubleValidator(-180, 180, 5);
     QDoubleValidator *latitudeVal = new QDoubleValidator(-90, 90, 5);
+    QDoubleValidator *heightVal = new QDoubleValidator();
 
     ui->longitudeLine->setValidator(longitudeVal);
     ui->latitudeLine->setValidator(latitudeVal);
+    ui->heightLine->setValidator(heightVal);
 }
 
 void MainWindow::onActionloadTriggered()
