@@ -11,7 +11,7 @@ void PointsSaver::operator()(double longitude, double latitude)
         return;
 
     if(coordinates->size())
-        coordinates->append(QGeoCoordinate(coordinates->back().longitude() + longitude, coordinates->back().latitude() + latitude));
+        coordinates->append(QGeoCoordinate(coordinates->back().longitude() + longitude, coordinates->back().latitude() + latitude, 0));
     else
-        coordinates->append(QGeoCoordinate(longitude, latitude));
+        coordinates->append(QGeoCoordinate(longitude, latitude, 0));
 }

@@ -8,7 +8,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), data(nullptr), chart(nullptr), xAxis(nullptr), yAxis(nullptr)
 {
     ui->setupUi(this);
 
@@ -66,6 +66,66 @@ void MainWindow::receiveError(const QString &title, const QString &message, erro
     }
 }
 
+void MainWindow::clearGraph()
+{
+    if(chart)
+        delete chart;
+    if(xAxis)
+        delete xAxis;
+    if(yAxis)
+        delete yAxis;
+    if(data)
+        delete data;
+
+    chart = new QtCharts::QChart();
+    xAxis = new QtCharts::QValueAxis();
+    yAxis = new QtCharts::QValueAxis();
+    data = new QtCharts::QLineSeries();
+
+    chart->setTitle("Height map: ");
+    xAxis->setLabelFormat("%d");
+    xAxis->setTitleText("Distance(m)");
+    yAxis->setLabelFormat("%d");
+    yAxis->setTitleText("Height(m)");
+
+    chartView.hide();
+}
+
+void MainWindow::addPointToGraph(double x, double y)
+{
+    data->append(x, y);
+}
+
+void MainWindow::displayGraph()
+{
+    chartView.setChart(chart);
+
+    chart->addSeries(data);
+    chart->addAxis(xAxis, Qt::AlignBottom);
+    chart->addAxis(yAxis, Qt::AlignLeft);
+    data->attachAxis(xAxis);
+    data->attachAxis(yAxis);
+
+    chartView.show();
+}
+
+void MainWindow::runGUITests()
+{
+    qDebug() << "Testing route creation...";
+    emit createRoute();
+    qDebug() << "Testing point creation...";
+    emit createPoint();
+
+    qDebug() << "Testing point removal...";
+    emit removePoint(nullptr);
+    ui->routeTableView->selectRow(0);
+    ui->pointTableView->selectRow(0);
+    emit removePoint(ui->pointTableView->selectionModel());
+
+    qDebug() << "Testing height map...";
+    emit drawHeightMap(ui->routeTableView->selectionModel());
+}
+
 
 void MainWindow::setConnections()
 {
@@ -106,6 +166,7 @@ void MainWindow::setConnections()
     connect(ui->actionReset, SIGNAL(triggered()), SLOT(onActionresetTriggered()));
     connect(ui->actionCreateRoute, SIGNAL(triggered()), SLOT(onActioncreaterouteTriggered()));
     connect(ui->actionUpdatePolyline, SIGNAL(triggered()), SLOT(onActionupdatepolylineTriggered()));
+    connect(ui->actionHeight_Map, SIGNAL(triggered()), SLOT(onActionheightMapTriggered()));
 
     // Buttons connections
     connect(ui->addRoutePushButton, SIGNAL(clicked()), SIGNAL(createRoute()));
@@ -131,6 +192,7 @@ void MainWindow::setValidators()
     ui->heightLine->setValidator(heightVal);
 }
 
+
 void MainWindow::onActionloadTriggered()
 {
     QStringList filename = QFileDialog::getOpenFileNames(nullptr, "GPX File", QString(), "*.gpx");
@@ -155,4 +217,9 @@ void MainWindow::onActioncreaterouteTriggered()
 void MainWindow::onActionupdatepolylineTriggered()
 {
     emit writePolyline(QFileDialog::getSaveFileName(this, "Polyline file", QString(), "*.txt"));
+}
+
+void MainWindow::onActionheightMapTriggered()
+{
+    emit drawHeightMap(ui->routeTableView->selectionModel());
 }

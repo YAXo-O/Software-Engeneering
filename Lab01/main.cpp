@@ -3,12 +3,19 @@
 
 #include "presenter.h"
 #include "model.h"
+#include "Tests/guitest.h"
+
+#define GUITESTS
 
 void connectToView(Presenter &presenter, const MainWindow &window);
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+#ifdef GUITESTS
+    runTests();
+#endif
 
     MainWindow w;
     Presenter presenter;
@@ -51,5 +58,10 @@ void connectToView(Presenter &presenter, const MainWindow &window)
     QObject::connect(&window, SIGNAL(readPolyline(QString)), &presenter, SLOT(readPolyline(QString)));
     QObject::connect(&window, SIGNAL(writePolyline(QString)), &presenter, SLOT(writePolyline(QString)));
     QObject::connect(&presenter, SIGNAL(sendError(QString,QString,errorLevel)), &window, SLOT(receiveError(QString,QString,errorLevel)));
+    QObject::connect(&window, SIGNAL(drawHeightMap(QItemSelectionModel*)), &presenter, SLOT(drawHeightMap(QItemSelectionModel*)));
+    QObject::connect(&presenter, SIGNAL(addPointToGraph(double,double)), &window, SLOT(addPointToGraph(double,double)));
+    QObject::connect(&presenter, SIGNAL(displayGraph()), &window, SLOT(displayGraph()));
+    QObject::connect(&presenter, SIGNAL(clearGraph()), &window, SLOT(clearGraph()));
+
 }
 

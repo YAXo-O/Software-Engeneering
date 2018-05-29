@@ -44,6 +44,8 @@ public:
     void restoreRoute(int id);
     void dropBackup(int id);
 
+    void recalcDistance(int id);
+
 public slots:
     void selectRoute(int id);
 

@@ -266,3 +266,32 @@ void Presenter::writePolyline(const QString &filename)
     stream << polyline;
     file.close();
 }
+
+void Presenter::drawHeightMap(QItemSelectionModel *selection)
+{
+    QModelIndexList rows = selection->selectedIndexes();
+    if(rows.size())
+    {
+        int row = rows.front().row();
+        int id = model->getRoutes()->data(model->getRoutes()->index(row, 0)).toInt();
+
+        QVector<QGeoCoordinate> *coords = model->getDbManager()->getPoints(id);
+
+        int count = coords->count();
+        QGeoCoordinate prev = coords->at(0);
+        double len = 0;
+        emit clearGraph();
+        for(int i = 0; i < count; i++)
+        {
+            QGeoCoordinate current = coords->at(i);
+            len += prev.distanceTo(current);
+            emit addPointToGraph(len, current.altitude());
+            prev = current;
+        }
+        emit displayGraph();
+
+        delete coords;
+    }
+    else
+        emit sendError("No selection", "No route is selected!", EL_INFO);
+}

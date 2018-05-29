@@ -49,10 +49,16 @@ public slots:
     void readPolyline(const QString &filename);
     void writePolyline(const QString &filename);
 
+    void drawHeightMap(QItemSelectionModel *selection);
+
 signals:
     void currentName(const QString &name);
     void currentPoint(double longitude, double latitude, double height);
     void sendError(const QString &title, const QString &message, errorLevel level);
+
+    void clearGraph();
+    void addPointToGraph(double x, double y);
+    void displayGraph();
 
 private:
     Model *model;

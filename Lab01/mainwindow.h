@@ -5,6 +5,8 @@
 #include <QModelIndex>
 #include <QItemSelectionModel>
 
+#include <QtCharts>
+
 #include "errorlevel.h"
 
 namespace Ui {
@@ -33,6 +35,12 @@ public slots:
 
     void receiveError(const QString &title, const QString &message, errorLevel level);
 
+    void clearGraph();
+    void addPointToGraph(double x, double y);
+    void displayGraph();
+
+    void runGUITests();
+
 signals:
     void loadFile(const QString &filename);
     void undo();
@@ -53,14 +61,23 @@ signals:
     void readPolyline(const QString &filename);
     void writePolyline(const QString &filename);
 
+    void drawHeightMap(QItemSelectionModel *selection);
+
 private slots:
     void onActionloadTriggered();
     void onActionresetTriggered();
     void onActioncreaterouteTriggered();
     void onActionupdatepolylineTriggered();
 
+    void onActionheightMapTriggered();
+
 private:
     Ui::MainWindow *ui;
+    QtCharts::QLineSeries *data;
+    QtCharts::QChart *chart;
+    QtCharts::QChartView chartView;
+    QtCharts::QValueAxis *xAxis;
+    QtCharts::QValueAxis *yAxis;
 
     void setValidators();
 };

@@ -145,6 +145,8 @@ int DBManager::addPoint(const QGeoCoordinate &coordinate)
     if(!insert.exec())
         qDebug() << db.lastError();
 
+    recalcDistance(currentRoute);
+
     QSqlQuery returning;
     const QString returningQuery = "SELECT last_insert_rowid()";
     if(!returning.exec(returningQuery))
@@ -161,6 +163,20 @@ int DBManager::addPoint(const QGeoCoordinate &coordinate)
 
 void DBManager::removePoint(int id)
 {
+    QSqlQuery select;
+    const QString selectQuery = "SELECT route FROM points WHERE id = ?";
+
+    select.prepare(selectQuery);
+    select.bindValue(0, QString::number(id));
+
+    if(!select.exec())
+        qDebug() << db.lastError();
+
+    int routeId = -1;
+    if(!select.next())
+        return;
+    routeId = select.value(0).toInt();
+
     QSqlQuery remove;
     const QString removeQuery = "DELETE FROM points WHERE id = ?";
 
@@ -169,6 +185,8 @@ void DBManager::removePoint(int id)
 
     if(!remove.exec())
         qDebug() << db.lastError();
+
+    recalcDistance(routeId);
 
     if(bNotify)
         emit needsRefreshment();
@@ -192,6 +210,8 @@ void DBManager::restorePoint(const QGeoCoordinate &coordinate, int id)
 
     if(!insert.exec())
         qDebug() << db.lastError();
+
+    recalcDistance(currentRoute);
 
     if(bNotify)
         emit needsRefreshment();
@@ -221,13 +241,29 @@ QVector<QGeoCoordinate> *DBManager::getPoints(int routeId)
 
     QVector<QGeoCoordinate> *result = new QVector<QGeoCoordinate>;
     while(select.next())
-        result->append(QGeoCoordinate(select.value(0).toDouble(), select.value(1).toDouble(), select.value(2).toDouble()));
+        result->append(QGeoCoordinate(select.value(1).toDouble(), select.value(0).toDouble(), select.value(2).toDouble()));
 
     return result;
 }
 
 void DBManager::changeLongitude(double value, int id)
 {
+    /*
+    QSqlQuery select;
+    const QString selectQuery = "SELECT route FROM points WHERE id = ?";
+
+    select.prepare(selectQuery);
+    select.bindValue(0, QString::number(id));
+
+    if(!select.exec())
+        qDebug() << db.lastError();
+
+    int routeId = -1;
+    if(!select.next())
+        return;
+    routeId = select.value(0).toInt();
+    */
+
     QSqlQuery update;
     const QString updateQuery = "UPDATE points SET longitude = ? WHERE id = ?";
 
@@ -376,12 +412,42 @@ void DBManager::dropBackup(int id)
         qDebug() << db.lastError();
 }
 
+void DBManager::recalcDistance(int id)
+{
+    return;
+
+    QSqlQuery select;
+    const QString selectQuery = "SELECT longitude, latitude, height FROM points WHERE route = " + QString::number(id);
+
+    if(!select.exec(selectQuery))
+        qDebug() << db.lastError();
+
+    double len = 0;
+
+    if(select.next())
+    {
+        QGeoCoordinate previous(select.value(1).toDouble(), select.value(0).toDouble(), select.value(2).toDouble());
+        while(select.next())
+        {
+            QGeoCoordinate current(select.value(1).toDouble(), select.value(0).toDouble(), select.value(2).toDouble());
+            len += previous.distanceTo(current);
+            previous = current;
+        }
+    }
+
+    QSqlQuery update;
+    const QString updateQuery = "UPDATE routes SET len = ? WHERE id = ?";
+
+    update.prepare(updateQuery);
+    update.bindValue(0, QString::number(len));
+    update.bindValue(1, QString::number(id));
+}
+
 void DBManager::selectRoute(int id)
 {
     int previous = currentRoute;
     currentRoute = id;
     emit selectionChanged(previous, currentRoute);
-    //emit selectionChanged(currentRoute, currentRoute = id);
 }
 
 

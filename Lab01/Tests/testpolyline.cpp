@@ -44,4 +44,3 @@ void TestPolyline::decode()
 }
 
 //QTEST_MAIN(TestPolyline)
-/*#include "TestPolyline.moc"*/

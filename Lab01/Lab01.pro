@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml sql testlib positioning
+QT       += core gui xml sql testlib positioning charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -49,7 +49,9 @@ SOURCES += main.cpp\
     Visitors/visitorturns.cpp \
     Visitors/visitorvertical.cpp \
     Visitors/visitorsearchdownhills.cpp \
-    Commands/changeheight.cpp
+    Commands/changeheight.cpp \
+    Tests/testpresenter.cpp \
+    Tests/guitest.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -77,6 +79,8 @@ HEADERS  += mainwindow.h \
     Visitors/visitorturns.h \
     Visitors/visitorvertical.h \
     Visitors/visitorsearchdownhills.h \
-    Commands/changeheight.h
+    Commands/changeheight.h \
+    Tests/testpresenter.h \
+    Tests/guitest.h
 
 FORMS    += mainwindow.ui

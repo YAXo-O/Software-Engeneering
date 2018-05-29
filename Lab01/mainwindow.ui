@@ -149,6 +149,7 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
+    <addaction name="actionHeight_Map"/>
    </widget>
    <widget class="QMenu" name="menuPolyline">
     <property name="title">
@@ -208,6 +209,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionHeight_Map">
+   <property name="text">
+    <string>Height Map</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Q</string>
    </property>
   </action>
  </widget>
