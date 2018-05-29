@@ -8,6 +8,7 @@
 #include <QtCharts>
 
 #include "errorlevel.h"
+#include "pluginmanager.h"
 
 namespace Ui {
     class MainWindow;
@@ -78,8 +79,10 @@ private:
     QtCharts::QChartView chartView;
     QtCharts::QValueAxis *xAxis;
     QtCharts::QValueAxis *yAxis;
+    PluginManager *manager;
 
     void setValidators();
+    void setPluginManager();
 };
 
 #endif // MAINWINDOW_H

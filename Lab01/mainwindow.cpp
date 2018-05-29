@@ -8,13 +8,15 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), data(nullptr), chart(nullptr), xAxis(nullptr), yAxis(nullptr)
+    ui(new Ui::MainWindow), data(nullptr), chart(nullptr), xAxis(nullptr), yAxis(nullptr),
+    manager(new PluginManager())
 {
     ui->setupUi(this);
 
     ui->routeTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     setValidators();
+    setPluginManager();
 }
 
 MainWindow::~MainWindow()
@@ -190,6 +192,16 @@ void MainWindow::setValidators()
     ui->longitudeLine->setValidator(longitudeVal);
     ui->latitudeLine->setValidator(latitudeVal);
     ui->heightLine->setValidator(heightVal);
+}
+
+void MainWindow::setPluginManager()
+{
+    QThread *thread = new QThread();
+
+    manager->moveToThread(thread);
+    connect(thread, SIGNAL(started()), manager, SLOT(checkLoop()));
+
+    thread->start();
 }
 
 

@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     Visitors/visitorsearchdownhills.cpp \
     Commands/changeheight.cpp \
     Tests/testpresenter.cpp \
-    Tests/guitest.cpp
+    Tests/guitest.cpp \
+    pluginmanager.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -81,6 +82,7 @@ HEADERS  += mainwindow.h \
     Visitors/visitorsearchdownhills.h \
     Commands/changeheight.h \
     Tests/testpresenter.h \
-    Tests/guitest.h
+    Tests/guitest.h \
+    pluginmanager.h
 
 FORMS    += mainwindow.ui

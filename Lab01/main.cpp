@@ -5,7 +5,7 @@
 #include "model.h"
 #include "Tests/guitest.h"
 
-#define GUITESTS
+#define GUITESTS_NO
 
 void connectToView(Presenter &presenter, const MainWindow &window);
 
