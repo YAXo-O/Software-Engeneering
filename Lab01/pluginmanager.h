@@ -3,16 +3,19 @@
 
 #include <QObject>
 
+class Model;
+
 class PluginManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit PluginManager(unsigned long sleepTime = 3, QObject *parent = nullptr);
+    explicit PluginManager(Model *model, unsigned long sleepTime = 3, QObject *parent = nullptr);
 
 public slots:
     void checkLoop();
 
 private:
+    Model *model;
     unsigned long sleepTime;
 };
 

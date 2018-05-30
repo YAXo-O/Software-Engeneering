@@ -1,8 +1,8 @@
+#include "visitorturns.h"
 #include "../model.h"
 
-#include "visitorturns.h"
+#include <QDebug>
 
 void VisitorTurns::operator()(Model &m)
 {
-
 }

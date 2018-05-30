@@ -3,8 +3,12 @@
 
 #include "abstractvisitor.h"
 
-class VisitorTurns : public AbstractVisitor
+class VisitorTurns : public QObject, public AbstractVisitor
 {
+    Q_OBJECT
+    Q_INTERFACES(AbstractVisitor)
+    Q_PLUGIN_METADATA(IID "YAX.PPO.AbstractVisitor" FILE "visitorturns.json")
+
 public:
     VisitorTurns() = default;
     ~VisitorTurns() override {}

@@ -7,8 +7,10 @@
 #include "../../GooglePolylineCoder/GooglePolylineCoder/googlepolylinecoder.h"
 #include "model.h"
 #include "pointssaver.h"
+#include "pluginmanager.h"
 
-Presenter::Presenter(QObject *parent) : QObject(parent), model(nullptr), routesView(nullptr), pointsView(nullptr)
+Presenter::Presenter(QObject *parent) : QObject(parent), model(nullptr), routesView(nullptr), pointsView(nullptr),
+    pManager(nullptr), pThread(nullptr)
 {
 }
 
@@ -20,6 +22,8 @@ Model *Presenter::getModel() const
 void Presenter::setModel(Model *value)
 {
     model = value;
+
+    createPluginManager();
 }
 
 QTableView *Presenter::getRoutesView() const
@@ -294,4 +298,16 @@ void Presenter::drawHeightMap(QItemSelectionModel *selection)
     }
     else
         emit sendError("No selection", "No route is selected!", EL_INFO);
+}
+
+void Presenter::createPluginManager()
+{
+    pThread = new QThread();
+    pManager = new PluginManager(model);
+
+    pManager->moveToThread(pThread);
+    QObject::connect(pThread, SIGNAL(started()), pManager, SLOT(checkLoop()));
+
+    pThread->start();
+    qDebug() << "Thread started";
 }

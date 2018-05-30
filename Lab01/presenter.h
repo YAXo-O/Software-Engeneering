@@ -11,6 +11,7 @@
 
 class Model;
 class QTableView;
+class PluginManager;
 
 class Presenter : public QObject
 {
@@ -66,6 +67,10 @@ private:
     QTableView *pointsView;
     CommandManager cManager;
     CommandFactory factory;
+    PluginManager *pManager;
+    QThread *pThread;
+
+    void createPluginManager();
 
 };
 

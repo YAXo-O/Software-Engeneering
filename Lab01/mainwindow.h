@@ -79,10 +79,8 @@ private:
     QtCharts::QChartView chartView;
     QtCharts::QValueAxis *xAxis;
     QtCharts::QValueAxis *yAxis;
-    PluginManager *manager;
 
     void setValidators();
-    void setPluginManager();
 };
 
 #endif // MAINWINDOW_H
