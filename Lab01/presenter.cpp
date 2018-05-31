@@ -309,5 +309,4 @@ void Presenter::createPluginManager()
     QObject::connect(pThread, SIGNAL(started()), pManager, SLOT(checkLoop()));
 
     pThread->start();
-    qDebug() << "Thread started";
 }

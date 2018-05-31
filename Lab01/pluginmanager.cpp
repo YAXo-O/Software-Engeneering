@@ -2,6 +2,7 @@
 #include <QThread>
 #include <QApplication>
 #include <QPluginLoader>
+#include <QDateTime>
 
 #include "model.h"
 #include "pluginmanager.h"
@@ -36,20 +37,38 @@ void PluginManager::checkLoop()
 
        for(auto file: fileinfo)
        {
-           QPluginLoader loader(dir.absoluteFilePath(file.fileName()));
-           QObject *plugin = loader.instance();
-           if(plugin)
+           if(needsLoading(file, dir))
            {
-               qDebug() << "casting...";
-               AbstractVisitor *visitor = qobject_cast<AbstractVisitor *>(plugin);
-               if(visitor)
+               QPluginLoader loader(dir.absoluteFilePath(file.fileName()));
+               QObject *plugin = loader.instance();
+               if(plugin)
                {
-                   visitor->operator()(*model);
-                   qDebug() << "Cast success";
+                   AbstractVisitor *visitor = qobject_cast<AbstractVisitor *>(plugin);
+                   if(visitor)
+                       pluginTable[file.fileName()] = {.visitor = visitor, .fileInfo = file};
                }
            }
        }
 
        QThread::sleep(sleepTime);
    }
+}
+
+bool PluginManager::needsLoading(const QFileInfo file, const QDir &dir)
+{
+    if(pluginTable.contains(file.fileName()))
+    {
+        QFileInfo finfo = pluginTable[file.fileName()].fileInfo;
+        if(file.lastModified() > finfo.lastModified())
+        {
+            QPluginLoader unloader(dir.absoluteFilePath(finfo.fileName()));
+            unloader.unload();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
 }

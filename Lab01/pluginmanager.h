@@ -2,8 +2,17 @@
 #define PLUGINMANAGER_H
 
 #include <QObject>
+#include <QFileInfo>
+#include <QHash>
 
 class Model;
+class AbstractVisitor;
+
+struct loaderData
+{
+    AbstractVisitor *visitor;
+    QFileInfo fileInfo;
+};
 
 class PluginManager : public QObject
 {
@@ -17,6 +26,10 @@ public slots:
 private:
     Model *model;
     unsigned long sleepTime;
+
+    QHash<QString, loaderData> pluginTable;
+
+    bool needsLoading(const QFileInfo file, const QDir &dir);
 };
 
 #endif // PLUGINMANAGER_H

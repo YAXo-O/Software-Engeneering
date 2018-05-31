@@ -158,9 +158,16 @@
     <addaction name="actionCreateRoute"/>
     <addaction name="actionUpdatePolyline"/>
    </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <addaction name="actionPlugin_table"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuPolyline"/>
+   <addaction name="menuPlugins"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLoad">
@@ -217,6 +224,14 @@
    </property>
    <property name="shortcut">
     <string>Shift+Q</string>
+   </property>
+  </action>
+  <action name="actionPlugin_table">
+   <property name="text">
+    <string>Plugin Table</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>
