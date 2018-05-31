@@ -8,7 +8,7 @@
 #include <QtCharts>
 
 #include "errorlevel.h"
-#include "pluginmanager.h"
+#include "plugintableview.h"
 
 namespace Ui {
     class MainWindow;
@@ -42,6 +42,8 @@ public slots:
 
     void runGUITests();
 
+    void pluginManager(QHash<QString, loaderData> *pluginTable);
+
 signals:
     void loadFile(const QString &filename);
     void undo();
@@ -64,13 +66,16 @@ signals:
 
     void drawHeightMap(QItemSelectionModel *selection);
 
+    void getPluginManager();
+    void sendVisitor(AbstractVisitor *visitor);
+
 private slots:
     void onActionloadTriggered();
     void onActionresetTriggered();
     void onActioncreaterouteTriggered();
     void onActionupdatepolylineTriggered();
-
     void onActionheightMapTriggered();
+    void onActionpluginTableTriggered();
 
 private:
     Ui::MainWindow *ui;
@@ -79,6 +84,7 @@ private:
     QtCharts::QChartView chartView;
     QtCharts::QValueAxis *xAxis;
     QtCharts::QValueAxis *yAxis;
+    PluginTableView pluginView;
 
     void setValidators();
 };

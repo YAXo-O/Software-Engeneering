@@ -21,12 +21,13 @@ public:
     void setPoints(QSqlQueryModel *pointsModel);
     void setDbManager(DBManager *dbmanager);
 
-    void acceptVisitor(AbstractVisitor *visitor);
-
     void init();
 
 signals:
     void needsUpdate();
+
+public slots:
+    void receiveVisitor(AbstractVisitor *visitor);
 
 private:
     QSqlQueryModel *routes;

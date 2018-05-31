@@ -13,7 +13,7 @@ public:
     VisitorSearchDownhills() = default;
     ~VisitorSearchDownhills() override {}
 
-    void operator()(Model &m) override;
+    void operator()(DBManager &m) override;
 };
 
 #endif // VISITORSEARCHDOWNHILLS_H

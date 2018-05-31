@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       -= gui
+QT += sql positioning
 
 TARGET = VisitorTurns#$$qtLibraryTarget(Lab03)#Visitors
 TEMPLATE = lib
@@ -25,9 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += visitorturns.cpp
+SOURCES += visitorturns.cpp \
+    ../dbmanager.cpp
 
-HEADERS += visitorturns.h
+HEADERS += visitorturns.h \
+    ../dbmanager.h
 
 unix {
     target.path = /usr/lib

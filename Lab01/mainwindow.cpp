@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->routeTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     setValidators();
+
+    connect(&pluginView, SIGNAL(sendVisitor(AbstractVisitor*)), SIGNAL(sendVisitor(AbstractVisitor*)));
 }
 
 MainWindow::~MainWindow()
@@ -126,6 +128,11 @@ void MainWindow::runGUITests()
     emit drawHeightMap(ui->routeTableView->selectionModel());
 }
 
+void MainWindow::pluginManager(QHash<QString, loaderData> *pluginTable)
+{
+    pluginView.show(pluginTable);
+}
+
 
 void MainWindow::setConnections()
 {
@@ -167,6 +174,7 @@ void MainWindow::setConnections()
     connect(ui->actionCreateRoute, SIGNAL(triggered()), SLOT(onActioncreaterouteTriggered()));
     connect(ui->actionUpdatePolyline, SIGNAL(triggered()), SLOT(onActionupdatepolylineTriggered()));
     connect(ui->actionHeight_Map, SIGNAL(triggered()), SLOT(onActionheightMapTriggered()));
+    connect(ui->actionPlugin_table, SIGNAL(triggered()), SLOT(onActionpluginTableTriggered()));
 
     // Buttons connections
     connect(ui->addRoutePushButton, SIGNAL(clicked()), SIGNAL(createRoute()));
@@ -221,4 +229,9 @@ void MainWindow::onActionupdatepolylineTriggered()
 void MainWindow::onActionheightMapTriggered()
 {
     emit drawHeightMap(ui->routeTableView->selectionModel());
+}
+
+void MainWindow::onActionpluginTableTriggered()
+{
+    emit getPluginManager();
 }

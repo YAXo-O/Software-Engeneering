@@ -300,6 +300,12 @@ void Presenter::drawHeightMap(QItemSelectionModel *selection)
         emit sendError("No selection", "No route is selected!", EL_INFO);
 }
 
+void Presenter::getPluginTable()
+{
+    if(pManager)
+        emit sendPluginTable(pManager->getPluginTable());
+}
+
 void Presenter::createPluginManager()
 {
     pThread = new QThread();

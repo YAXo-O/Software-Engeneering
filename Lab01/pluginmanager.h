@@ -20,6 +20,8 @@ class PluginManager : public QObject
 public:
     explicit PluginManager(Model *model, unsigned long sleepTime = 3, QObject *parent = nullptr);
 
+    QHash<QString, loaderData> *getPluginTable();
+
 public slots:
     void checkLoop();
 

@@ -3,7 +3,7 @@
 
 #include <QtPlugin>
 
-class Model;
+class DBManager;
 
 class AbstractVisitor
 {
@@ -11,7 +11,7 @@ public:
     AbstractVisitor() = default;
     virtual ~AbstractVisitor() {}
 
-    virtual void operator()(Model &m) = 0;
+    virtual void operator()(DBManager &m) = 0;
 };
 
 Q_DECLARE_INTERFACE(AbstractVisitor, "YAX.PPO.AbstractVisitor")

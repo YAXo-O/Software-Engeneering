@@ -13,7 +13,11 @@
 PluginManager::PluginManager(Model *_model, unsigned long _sleepTime, QObject *parent) : QObject(parent),
     model(_model),sleepTime(_sleepTime)
 {
+}
 
+QHash<QString, loaderData> *PluginManager::getPluginTable()
+{
+    return &pluginTable;
 }
 
 void PluginManager::checkLoop()

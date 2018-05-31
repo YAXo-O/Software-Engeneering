@@ -1,7 +1,7 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
 
-#include <QWidget>
+#include <QObject>
 #include <QString>
 #include <QtSql>
 #include <QGeoCoordinate>
@@ -9,7 +9,9 @@
 const QString routeCopyPrefix = "routeCopy";
 const QString pointsCopyPrefix = "pointsCopy";
 
-class DBManager: public QWidget
+class AbstractVisitor;
+
+class DBManager: public QObject
 {
     Q_OBJECT
 public:
@@ -45,6 +47,8 @@ public:
     void dropBackup(int id);
 
     void recalcDistance(int id);
+
+    void acceptVisitor(AbstractVisitor *visitor);
 
 public slots:
     void selectRoute(int id);

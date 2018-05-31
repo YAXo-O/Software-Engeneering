@@ -1,7 +1,7 @@
-#include "../model.h"
+#include "../dbmanager.h"
 
 #include "visitorvertical.h"
 
-void VisitorVertical::operator()(Model &m)
+void VisitorVertical::operator()(DBManager &m)
 {
 }

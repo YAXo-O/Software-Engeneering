@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
     presenter.setConnections();
     w.setConnections();
     connectToView(presenter, w);
+    QObject::connect(&presenter, SIGNAL(sendVisitor(AbstractVisitor*)), &model, SLOT(receiveVisitor(AbstractVisitor*)));
 
     w.show();
 
@@ -62,6 +63,9 @@ void connectToView(Presenter &presenter, const MainWindow &window)
     QObject::connect(&presenter, SIGNAL(addPointToGraph(double,double)), &window, SLOT(addPointToGraph(double,double)));
     QObject::connect(&presenter, SIGNAL(displayGraph()), &window, SLOT(displayGraph()));
     QObject::connect(&presenter, SIGNAL(clearGraph()), &window, SLOT(clearGraph()));
-
+    QObject::connect(&window, SIGNAL(getPluginManager()), &presenter, SLOT(getPluginTable()));
+    QObject::connect(&presenter, SIGNAL(sendPluginTable(QHash<QString,loaderData>*)), &window,
+                     SLOT(pluginManager(QHash<QString,loaderData>*)));
+    QObject::connect(&window, SIGNAL(sendVisitor(AbstractVisitor*)), &presenter, SIGNAL(sendVisitor(AbstractVisitor*)));
 }
 

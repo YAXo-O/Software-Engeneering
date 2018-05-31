@@ -3,8 +3,9 @@
 #include <QGeoCoordinate>
 
 #include "dbmanager.h"
+#include "Visitors/abstractvisitor.h"
 
-DBManager::DBManager(): QWidget(), currentRoute(0), serial(0), bNotify(true)
+DBManager::DBManager(): QObject(), currentRoute(0), serial(0), bNotify(true)
 { 
     db = QSqlDatabase::addDatabase("QSQLITE");
 
@@ -441,6 +442,12 @@ void DBManager::recalcDistance(int id)
     update.prepare(updateQuery);
     update.bindValue(0, QString::number(len));
     update.bindValue(1, QString::number(id));
+}
+
+void DBManager::acceptVisitor(AbstractVisitor *visitor)
+{
+    if(visitor)
+        visitor->operator()(*this);
 }
 
 void DBManager::selectRoute(int id)

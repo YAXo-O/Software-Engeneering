@@ -42,12 +42,6 @@ void Model::setDbManager(DBManager *value)
     connect(dbManager, SIGNAL(needsRefreshment()), SIGNAL(needsUpdate()));
 }
 
-void Model::acceptVisitor(AbstractVisitor *visitor)
-{
-    if(visitor)
-        visitor->operator()(*this);
-}
-
 void Model::init()
 {
     setDbManager(new DBManager());
@@ -56,4 +50,9 @@ void Model::init()
 
     routes->setQuery(dbManager->routeQuery());
     points->setQuery(dbManager->pointsQuery());
+}
+
+void Model::receiveVisitor(AbstractVisitor *visitor)
+{
+    dbManager->acceptVisitor(visitor);
 }

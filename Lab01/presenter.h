@@ -8,10 +8,10 @@
 #include "commandmanager.h"
 #include "commandfactory.h"
 #include "errorlevel.h"
+#include "pluginmanager.h"
 
 class Model;
 class QTableView;
-class PluginManager;
 
 class Presenter : public QObject
 {
@@ -51,6 +51,7 @@ public slots:
     void writePolyline(const QString &filename);
 
     void drawHeightMap(QItemSelectionModel *selection);
+    void getPluginTable();
 
 signals:
     void currentName(const QString &name);
@@ -60,6 +61,9 @@ signals:
     void clearGraph();
     void addPointToGraph(double x, double y);
     void displayGraph();
+
+    void sendPluginTable(QHash<QString, loaderData> *table);
+    void sendVisitor(AbstractVisitor *visitor);
 
 private:
     Model *model;

@@ -13,7 +13,7 @@ public:
     VisitorTurns() = default;
     ~VisitorTurns() override {}
 
-    void operator()(Model &m) override;
+    void operator()(DBManager &m) override;
 };
 
 #endif // VISITORTURNS_H

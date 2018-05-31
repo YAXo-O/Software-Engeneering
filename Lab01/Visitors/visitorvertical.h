@@ -13,7 +13,7 @@ public:
     VisitorVertical() = default;
     ~VisitorVertical() override {}
 
-    void operator()(Model &m) override;
+    void operator()(DBManager &m) override;
 };
 
 #endif // VISITORVERTICAL_H

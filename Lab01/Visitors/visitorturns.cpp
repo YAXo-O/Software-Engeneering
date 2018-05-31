@@ -1,8 +1,9 @@
 #include "visitorturns.h"
-#include "../model.h"
+#include "../dbmanager.h"
 
 #include <QDebug>
 
-void VisitorTurns::operator()(Model &m)
+void VisitorTurns::operator()(DBManager &m)
 {
+    qDebug() << m.getCurrentRoute();
 }

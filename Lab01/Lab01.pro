@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     Commands/changeheight.cpp \
     Tests/testpresenter.cpp \
     Tests/guitest.cpp \
-    pluginmanager.cpp
+    pluginmanager.cpp \
+    plugintableview.cpp
 
 HEADERS  += mainwindow.h \
     Parsers/gpxparser.h \
@@ -83,6 +84,7 @@ HEADERS  += mainwindow.h \
     Commands/changeheight.h \
     Tests/testpresenter.h \
     Tests/guitest.h \
-    pluginmanager.h
+    pluginmanager.h \
+    plugintableview.h
 
 FORMS    += mainwindow.ui

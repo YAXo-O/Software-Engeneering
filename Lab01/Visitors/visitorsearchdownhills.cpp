@@ -1,8 +1,8 @@
-#include "../model.h"
+#include "../dbmanager.h"
 
 #include "visitorsearchdownhills.h"
 
-void VisitorSearchDownhills::operator()(Model &m)
+void VisitorSearchDownhills::operator()(DBManager &m)
 {
 
 }
