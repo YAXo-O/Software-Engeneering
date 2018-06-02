@@ -46,9 +46,6 @@ SOURCES += main.cpp\
     Commands/importpolyline.cpp \
     Tests/testpolyline.cpp \
     Visitors/abstractvisitor.cpp \
-    Visitors/visitorturns.cpp \
-    Visitors/visitorvertical.cpp \
-    Visitors/visitorsearchdownhills.cpp \
     Commands/changeheight.cpp \
     Tests/testpresenter.cpp \
     Tests/guitest.cpp \
@@ -78,9 +75,6 @@ HEADERS  += mainwindow.h \
     Commands/importpolyline.h \
     Tests/testpolyline.h \
     Visitors/abstractvisitor.h \
-    Visitors/visitorturns.h \
-    Visitors/visitorvertical.h \
-    Visitors/visitorsearchdownhills.h \
     Commands/changeheight.h \
     Tests/testpresenter.h \
     Tests/guitest.h \
